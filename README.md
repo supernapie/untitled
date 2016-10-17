@@ -1,6 +1,8 @@
-# kong-jam-x
+# phaser-base
 
-http://www.kongregate.com/forums/1/topics/673084
+**All your base are belong to us.**
+
+This is a base template for building phaser.js games.
 
 
 
