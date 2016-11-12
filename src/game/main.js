@@ -30,4 +30,10 @@ window.onload = function() {
 
     game.state.start('boot');
 
+    // improved experience for games in iframes
+    window.focus();
+    document.body.addEventListener('click',function(e) {
+        window.focus();
+    },false);
+
 };
