@@ -1,6 +1,7 @@
 {
   "name": "phaser-base",
   "version": "0.0.1",
+  "author": "@quintenclause",
   "license": "MIT",
   "repository": {
     "type": "git",
