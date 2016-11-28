@@ -123,7 +123,8 @@ var menuState = {
         this.menuGroup.x = game.world.centerX;
         this.menuGroup.y = game.world.centerY;
 
-        var textsprite = this.menuGroup.add(this.createText(0, -80, 'Ready?\nHit spacebar'));
+        var titleSprite = this.menuGroup.add(this.createText(0, -40, gameData.menu.title, titleFontName, 48));
+        var startSprite = this.menuGroup.add(this.createText(0, 40, (game.device.touch) ? gameData.menu.start.touch : gameData.menu.start.keyboard, fontName, 24));
 
         //  Register the key.
         this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -156,12 +157,12 @@ var menuState = {
 
     },
 
-    createText: function (x, y, text) {
+    createText: function (x, y, text, font, size) {
 
         var textSprite = game.add.text(x, y, text);
         textSprite.anchor.setTo(0.5);
-        textSprite.font = fontName;
-        textSprite.fontSize = 32;
+        textSprite.font = font;
+        textSprite.fontSize = size;
         textSprite.fill = colors.normalStroke;
         textSprite.align = 'center';
 
@@ -176,7 +177,7 @@ var splashState = {
 
     create: function () {
 
-        var text = splashState.text = game.add.text(game.world.centerX, game.world.centerY, "Somewhere in space...");
+        var text = this.text = game.add.text(game.world.centerX, game.world.centerY, gameData.splash.title);
         text.anchor.setTo(0.5);
 
         text.font = fontName;
@@ -194,7 +195,7 @@ var splashState = {
 
     resize: function () {
 
-        var text = splashState.text;
+        var text = this.text;
         text.x = game.world.centerX;
         text.y = game.world.centerY;
 
@@ -202,31 +203,30 @@ var splashState = {
 
     shutdown: function () {
 
-        splashState.text = undefined;
+        this.text = undefined;
 
     }
 
 };
 
 var game;
-
 var gameData;
 
-var fontName = 'monospace';
-var googleFontName = 'Inconsolata';
+var fontName = 'sans-serif';
+var googleFontName = 'Varela Round';
+var titleFontName = 'serif';
+var titleGoogleFontName = 'Alice';
+
+WebFontConfig = {
+    active: function() { fontName = googleFontName; titleFontName = titleGoogleFontName; },
+    google: { families: [ googleFontName, titleGoogleFontName ] }
+};
 
 var fx;
 window.PhaserGlobal = { disableWebAudio: true };
 
 var colors = {normalBG: '#2c3e50', normalStroke: '#ecf0f1'};
 var tints = {normalBG: 0x2c3e50, normalStroke: 0xecf0f1};
-
-WebFontConfig = {
-    active: function() { fontName = googleFontName; },
-    google: {
-        families: [googleFontName]
-    }
-};
 
 window.onload = function() {
 

@@ -1,17 +1,17 @@
 {
+    "splash": {
+        "title": "Somewhere in cyberspace..."
+    },
     "menu": {
 
-        "titles": [
-
-            "phaser-base",
-            "huppeldepup"
-
-        ],
-
-        "buttons": [
-
-            "start"
-
-        ]
+        "title": "PHASER BASE",
+        "instructions": {
+            "keyboard": "Arrow keys to move\nSpacebar to jump",
+            "touch": "Hold and drag to move\nSecond finger to jump"
+        },
+        "start": {
+            "keyboard": "Hit spacebar",
+            "touch": "Tap anywhere"
+        }
     }
 }

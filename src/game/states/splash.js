@@ -4,7 +4,7 @@ var splashState = {
 
     create: function () {
 
-        var text = splashState.text = game.add.text(game.world.centerX, game.world.centerY, "Somewhere in space...");
+        var text = this.text = game.add.text(game.world.centerX, game.world.centerY, gameData.splash.title);
         text.anchor.setTo(0.5);
 
         text.font = fontName;
@@ -22,7 +22,7 @@ var splashState = {
 
     resize: function () {
 
-        var text = splashState.text;
+        var text = this.text;
         text.x = game.world.centerX;
         text.y = game.world.centerY;
 
@@ -30,7 +30,7 @@ var splashState = {
 
     shutdown: function () {
 
-        splashState.text = undefined;
+        this.text = undefined;
 
     }
 

@@ -1,22 +1,21 @@
 var game;
-
 var gameData;
 
-var fontName = 'monospace';
-var googleFontName = 'Inconsolata';
+var fontName = 'sans-serif';
+var googleFontName = 'Varela Round';
+var titleFontName = 'serif';
+var titleGoogleFontName = 'Alice';
+
+WebFontConfig = {
+    active: function() { fontName = googleFontName; titleFontName = titleGoogleFontName; },
+    google: { families: [ googleFontName, titleGoogleFontName ] }
+};
 
 var fx;
 window.PhaserGlobal = { disableWebAudio: true };
 
 var colors = {normalBG: '#2c3e50', normalStroke: '#ecf0f1'};
 var tints = {normalBG: 0x2c3e50, normalStroke: 0xecf0f1};
-
-WebFontConfig = {
-    active: function() { fontName = googleFontName; },
-    google: {
-        families: [googleFontName]
-    }
-};
 
 window.onload = function() {
 
