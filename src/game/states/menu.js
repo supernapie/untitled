@@ -3,6 +3,8 @@ var menuState = {
     menuGroup: undefined,
     spaceKey: undefined,
     switched: false,
+    startText: undefined,
+    blinkCount: 0,
 
     create: function () {
 
@@ -10,8 +12,8 @@ var menuState = {
         this.menuGroup.x = game.world.centerX;
         this.menuGroup.y = game.world.centerY;
 
-        var titleSprite = this.menuGroup.add(this.createText(0, -40, gameData.menu.title, titleFontName, 48));
-        var startSprite = this.menuGroup.add(this.createText(0, 40, (game.device.touch) ? gameData.menu.start.touch : gameData.menu.start.keyboard, fontName, 24));
+        var titleText = this.menuGroup.add(this.createText(0, -40, gameData.menu.title, titleFontName, 48));
+        this.startText = this.menuGroup.add(this.createText(0, 40, (game.device.touch) ? gameData.menu.start.touch : gameData.menu.start.keyboard, fontName, 24));
 
         //  Register the key.
         this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -34,6 +36,13 @@ var menuState = {
             this.switched = true;
             game.state.start('game');
         }
+
+        this.blinkCount++;
+        if (this.blinkCount > 15) {
+            this.blinkCount = 0;
+            this.startText.visible = !this.startText.visible;
+        }
+
     },
 
     startFullScreen: function () {
@@ -56,6 +65,7 @@ var menuState = {
 
         this.menuGroup = undefined;
         this.spaceKey = undefined;
+        this.startText = undefined;
 
     },
 
