@@ -39,6 +39,7 @@ var bootState = {
 
         // go on to preloading
         game.state.start('load');
+
     }
 };
 
@@ -91,6 +92,7 @@ var loadState = {
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
         //game.load.image('square', 'assets/sprites/square.png');
         //game.load.audio('sfx', 'assets/sounds/fx_mixdown.mp3');
+        //game.load.audio('ambient', ['assets/audio/ambient_mixdown.mp3', 'assets/audio/ambient_mixdown.ogg']);
         // ...
 
         game.load.start();
@@ -129,7 +131,7 @@ var loadState = {
         // process some things like audio sprites
         //fx = game.add.audio('sfx');
         //fx.allowMultiple = true;
-        //fx.addMarker('sound_name', 1, 0.5);
+        //fx.addMarker('coin', 1, 0.5);
         // ...
 
         gameData = game.cache.getJSON('gameData');
@@ -217,6 +219,9 @@ var menuState = {
         game.input.onDown.remove(this.startFullScreen, this);
         game.scale.startFullScreen(false);
         this.switched = true;
+        // play the sounds on this interaction otherwise they won't start on mobile, because of stupid human interface guidelines
+        //ambient.loopFull();
+        //fx.play('coin');
         game.state.start('game');
 
     },
@@ -255,6 +260,9 @@ var splashState = {
     text: undefined,
 
     create: function () {
+
+        ambient = game.add.audio('ambient');
+        ambient.loopFull();
 
         var text = this.text = game.add.text(game.world.centerX, game.world.centerY, gameData.splash.title);
         text.anchor.setTo(0.5);
@@ -302,6 +310,7 @@ WebFontConfig = {
 };
 
 var fx;
+var ambient;
 window.PhaserGlobal = { disableWebAudio: true };
 
 var colors = {normalBG: '#2c3e50', normalStroke: '#ecf0f1'};

@@ -16,6 +16,7 @@ var loadState = {
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
         //game.load.image('square', 'assets/sprites/square.png');
         //game.load.audio('sfx', 'assets/sounds/fx_mixdown.mp3');
+        //game.load.audio('ambient', ['assets/audio/ambient_mixdown.mp3', 'assets/audio/ambient_mixdown.ogg']);
         // ...
 
         game.load.start();
@@ -54,7 +55,7 @@ var loadState = {
         // process some things like audio sprites
         //fx = game.add.audio('sfx');
         //fx.allowMultiple = true;
-        //fx.addMarker('sound_name', 1, 0.5);
+        //fx.addMarker('coin', 1, 0.5);
         // ...
 
         gameData = game.cache.getJSON('gameData');

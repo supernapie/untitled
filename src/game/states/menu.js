@@ -50,6 +50,9 @@ var menuState = {
         game.input.onDown.remove(this.startFullScreen, this);
         game.scale.startFullScreen(false);
         this.switched = true;
+        // play the sounds on this interaction otherwise they won't start on mobile, because of stupid human interface guidelines
+        //ambient.loopFull();
+        //fx.play('coin');
         game.state.start('game');
 
     },

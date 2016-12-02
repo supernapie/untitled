@@ -11,5 +11,6 @@ var bootState = {
 
         // go on to preloading
         game.state.start('load');
+
     }
 };

@@ -12,6 +12,7 @@ WebFontConfig = {
 };
 
 var fx;
+var ambient;
 window.PhaserGlobal = { disableWebAudio: true };
 
 var colors = {normalBG: '#2c3e50', normalStroke: '#ecf0f1'};
