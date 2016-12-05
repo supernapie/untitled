@@ -52,4 +52,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('default', ['concat', 'uglify:src_target', 'connect', 'open', 'watch']);
+
+    grunt.registerTask('compile', ['concat', 'uglify:src_target']);
+
 };
