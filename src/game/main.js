@@ -13,7 +13,8 @@ WebFontConfig = {
 
 var fx;
 var ambient;
-window.PhaserGlobal = { disableWebAudio: true };
+var audioFallback = (Phaser.Device.isAndroidStockBrowser()) ? true : false;
+window.PhaserGlobal = { disableWebAudio: audioFallback };
 
 var colors = {normalBG: '#2c3e50', normalStroke: '#ecf0f1'};
 var tints = {normalBG: 0x2c3e50, normalStroke: 0xecf0f1};
