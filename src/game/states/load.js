@@ -25,7 +25,7 @@ var loadState = {
 
     create: function () {
 
-        game.load.onLoadStart.add(this.loadStart, this);
+        //game.load.onLoadStart.add(this.loadStart, this);
         game.load.onLoadComplete.add(this.loadComplete, this);
 
         // simple percentage text
@@ -51,6 +51,9 @@ var loadState = {
     },
 
     loadComplete: function () {
+
+        //game.load.onLoadStart.remove(this.loadStart, this);
+        game.load.onLoadComplete.remove(this.loadComplete, this);
 
         // process some things like audio sprites
         //fx = game.add.audio('sfx');
