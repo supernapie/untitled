@@ -1,30 +1,36 @@
-var gameState = {
+var createGameState = function () {
 
-    text: undefined,
+    var that = {};
 
-    create: function () {
+    that.text = undefined;
 
-        var text = gameState.text = game.add.text(game.world.centerX, game.world.centerY, "The game will start\nNOW!");
+    that.create = function () {
+
+        var text = this.text = game.add.text(game.world.centerX, game.world.centerY, "The game will start\nNOW!");
         text.anchor.setTo(0.5);
         text.font = fontName;
         text.fontSize = 20;
         text.fill = colors.normalStroke;
         text.align = 'center';
 
-    },
+    };
 
-    resize: function () {
+    that.resize = function () {
 
-        var text = gameState.text;
+        var text = this.text;
         text.x = game.world.centerX;
         text.y = game.world.centerY;
 
-    },
+    };
 
-    shutdown: function () {
+    that.shutdown = function () {
 
-        gameState.text = undefined;
+        this.text = undefined;
 
-    }
+    };
+
+    return that;
 
 };
+
+var gameState = createGameState();

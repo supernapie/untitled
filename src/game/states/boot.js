@@ -1,6 +1,8 @@
-var bootState = {
+var createBootState = function () {
 
-    create: function () {
+    var that = {};
+
+    that.create = function () {
 
         // do settings
         game.stage.backgroundColor = colors.normalBG;
@@ -12,5 +14,10 @@ var bootState = {
         // go on to preloading
         game.state.start('load');
 
-    }
+    };
+
+    return that;
+
 };
+
+var bootState = createBootState();

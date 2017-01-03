@@ -1,15 +1,17 @@
-var loadState = {
+var createLoadState =  function () {
 
-    nFontChecks: 0,
-    text: undefined,    
+    var that = {};
 
-    preload: function () {
+    that.nFontChecks = 0;
+    that.text = undefined;
+
+    that.preload = function () {
 
         // load any resources for the preloader here
 
-    },
+    };
 
-    start: function () {
+    that.start = function () {
 
         // add all game assets for preloading here
         game.load.json('gameData', 'assets/data/game.json');
@@ -21,9 +23,9 @@ var loadState = {
 
         game.load.start();
 
-    },
+    };
 
-    create: function () {
+    that.create = function () {
 
         //game.load.onLoadStart.add(this.loadStart, this);
         game.load.onLoadComplete.add(this.loadComplete, this);
@@ -38,19 +40,19 @@ var loadState = {
 
         this.start();
 
-    },
+    };
 
-    update: function () {
+    that.update = function () {
 
         this.text.text = game.load.progress + '%';
 
-    },
+    };
 
-    loadStart: function () {
+    that.loadStart = function () {
 
-    },
+    };
 
-    loadComplete: function () {
+    that.loadComplete = function () {
 
         //game.load.onLoadStart.remove(this.loadStart, this);
         game.load.onLoadComplete.remove(this.loadComplete, this);
@@ -65,31 +67,35 @@ var loadState = {
         //console.log(gameData);
         this.checkFontLoaded();
 
-    },
+    };
 
-    checkFontLoaded: function () {
+    that.checkFontLoaded = function () {
 
-        loadState.nFontChecks++;
-        if ((fontName == googleFontName) || (loadState.nFontChecks >= 6)) {
+        this.nFontChecks++;
+        if ((fontName == googleFontName) || (this.nFontChecks >= 6)) {
             game.state.start('splash');
         } else {
-            setTimeout(loadState.checkFontLoaded, 500);
+            setTimeout(that.checkFontLoaded, 500);
         }
 
-    },
+    };
 
-    resize: function () {
+    that.resize = function () {
 
         var text = this.text;
         text.x = game.world.centerX;
         text.y = game.world.centerY;
 
-    },
+    };
 
-    shutdown: function () {
+    that.shutdown = function () {
 
         this.text = undefined;
 
-    }
+    };
+
+    return that;
 
 };
+
+var loadState = createLoadState();

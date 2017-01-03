@@ -1,12 +1,14 @@
-var menuState = {
+var createMenuState = function () {
 
-    menuGroup: undefined,
-    spaceKey: undefined,
-    switched: false,
-    startText: undefined,
-    blinkCount: 0,
+    var that = {};
 
-    create: function () {
+    that.menuGroup = undefined;
+    that.spaceKey = undefined;
+    that.switched = false;
+    that.startText = undefined;
+    that.blinkCount = 0;
+
+    that.create = function () {
 
         this.menuGroup = game.add.group();
         this.menuGroup.x = game.world.centerX;
@@ -27,9 +29,9 @@ var menuState = {
             game.input.onDown.add(this.startFullScreen, this);
         }
 
-    },
+    };
 
-    update: function () {
+    that.update = function () {
 
         if (this.spaceKey.downDuration(1000) && !this.switched) {
             //console.log('switched');
@@ -43,9 +45,9 @@ var menuState = {
             this.startText.visible = !this.startText.visible;
         }
 
-    },
+    };
 
-    startFullScreen: function () {
+    that.startFullScreen = function () {
 
         game.input.onDown.remove(this.startFullScreen, this);
         game.scale.startFullScreen(false);
@@ -55,24 +57,24 @@ var menuState = {
         //fx.play('coin');
         game.state.start('game');
 
-    },
+    };
 
-    resize: function () {
+    that.resize = function () {
 
         this.menuGroup.x = game.world.centerX;
         this.menuGroup.y = game.world.centerY;
 
-    },
+    };
 
-    shutdown: function () {
+    that.shutdown = function () {
 
         this.menuGroup = undefined;
         this.spaceKey = undefined;
         this.startText = undefined;
 
-    },
+    };
 
-    createText: function (x, y, text, font, size) {
+    that.createText = function (x, y, text, font, size) {
 
         var textSprite = game.add.text(x, y, text);
         textSprite.anchor.setTo(0.5);
@@ -83,5 +85,10 @@ var menuState = {
 
         return textSprite;
 
-    }
+    };
+
+    return that;
+
 };
+
+var menuState = createMenuState();

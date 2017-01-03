@@ -1,8 +1,10 @@
-var splashState = {
+var createSplashState = function () {
 
-    text: undefined,
+    var that = {};
 
-    create: function () {
+    that.text = undefined;
+
+    that.create = function () {
 
         ambient = game.add.audio('ambient');
         ambient.loopFull();
@@ -21,20 +23,24 @@ var splashState = {
             game.state.start('menu');
         }, this);
 
-    },
+    };
 
-    resize: function () {
+    that.resize = function () {
 
         var text = this.text;
         text.x = game.world.centerX;
         text.y = game.world.centerY;
 
-    },
+    };
 
-    shutdown: function () {
+    that.shutdown = function () {
 
         this.text = undefined;
 
-    }
+    };
+
+    return that;
 
 };
+
+var splashState = createSplashState();
