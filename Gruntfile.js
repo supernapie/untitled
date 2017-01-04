@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         uglify: {
             options: {
                 mangle: false,
-                banner: '/*! <%= pkg.name %> v<%= pkg.version %> - <%= pkg.author %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */'+'\n\n/*! Built with: Phaser v2.6.2 - http://phaser.io - @photonstorm - (c) 2016 Photon Storm Ltd.*/\n\n'
+                banner: '/*! <%= pkg.name %> v<%= pkg.version %> - <%= pkg.author %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */'+'\n\n/*! Phaser v2.7.2 - http://phaser.io - @photonstorm - (c) 2016 Photon Storm Ltd. */\n\n'
             },
             src_target: {
                 files: {
