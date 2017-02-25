@@ -1,11 +1,11 @@
 {
-  "name": "phaser-base",
+  "name": "play",
   "version": "0.0.1",
   "author": "@quintenclause",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Quinten/phaser-base.git"
+    "url": "git@github.com:Quinten/play.git"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
