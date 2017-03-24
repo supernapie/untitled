@@ -293,8 +293,8 @@ var createSplashState = function () {
 
     that.create = function () {
 
-        ambient = game.add.audio('ambient');
-        ambient.loopFull();
+        //ambient = game.add.audio('ambient');
+        //ambient.loopFull();
 
         var text = this.text = game.add.text(game.world.centerX, game.world.centerY, gameData.splash.title);
         text.anchor.setTo(0.5);
