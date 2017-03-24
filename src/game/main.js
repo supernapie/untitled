@@ -19,6 +19,8 @@ window.PhaserGlobal = { disableWebAudio: audioFallback };
 var colors = {normalBG: '#2c3e50', normalStroke: '#ecf0f1'};
 var tints = {normalBG: 0x2c3e50, normalStroke: 0xecf0f1};
 
+var socket = io();
+
 window.onload = function() {
 
     game = new Phaser.Game("100%", "100%", Phaser.CANVAS, '');
