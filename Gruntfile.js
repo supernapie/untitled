@@ -1,6 +1,5 @@
 module.exports = function(grunt) {
 
-    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-open');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
@@ -8,15 +7,6 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        connect: {
-            server: {
-                options: {
-                    hostname: '*',
-                    port: 2052,
-                    base: 'pub'
-                }
-            }
-        },
         concat: {
             dist: {
                 src: [  "src/lib/**/*.min.js",
@@ -42,7 +32,7 @@ module.exports = function(grunt) {
         },
         open: {
             dev: {
-                path: 'http://localhost:2052/'
+                path: 'http://localhost:3000/'
             }
         },
         watch: {
@@ -51,7 +41,11 @@ module.exports = function(grunt) {
         },
     });
 
-    grunt.registerTask('default', ['concat', 'uglify:src_target', 'connect', 'open', 'watch']);
+    grunt.registerTask('server', 'Start the dev web server', function() {
+        require('./server.js');
+    });
+
+    grunt.registerTask('default', ['concat', 'uglify:src_target', 'server', 'open', 'watch']);
 
     grunt.registerTask('compile', ['concat', 'uglify:src_target']);
 
