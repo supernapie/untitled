@@ -55,30 +55,204 @@ var createGameState = function () {
 
     var that = {};
 
-    that.text = undefined;
+    that.map = undefined;
+    that.layer = undefined;
+    that.climbLayer = undefined;
+    that.player = undefined;
+    that.cursors = undefined;
+    that.jumpButton = undefined;
+
+    // can/must set values in substate
+    that.tilemapName = 'levelx';
+    that.tilesetImageName = 'tilesx';
+    that.startPoint = {x: 32, y: 32};
+
+    // private, can't set values change
+    that.facing = 'left';
+    that.jumpTimer = 0;
+    that.canClimb = false;
+    that.isClimbing = false;
+    that.justClimbed = false;
+    that.climbTimer = 0;
+    that.resizeTO = 0;
 
     that.create = function () {
 
-        var text = this.text = game.add.text(game.world.centerX, game.world.centerY, "The game will start\nNOW!");
-        text.anchor.setTo(0.5);
-        text.font = fontName;
-        text.fontSize = 20;
-        text.fill = colors.normalStroke;
-        text.align = 'center';
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+        game.physics.arcade.gravity.y = 500;
+
+        this.map = game.add.tilemap(this.tilemapName);
+        this.map.addTilesetImage(this.tilesetImageName);
+
+        this.map.setCollisionByExclusion([13, 14, 15]);
+
+        this.layer = this.map.createLayer('Tile Layer 1');
+        //this.layer.debug = true;
+        this.layer.resizeWorld();
+
+        this.climbLayer = this.map.createLayer('Tile Layer 2');
+        //this.climbLayer.debug = true;
+        //this.climbLayer.resizeWorld();
+
+        this.player = game.add.sprite(this.startPoint.x, this.startPoint.y, 'tilda');
+        game.physics.enable(this.player, Phaser.Physics.ARCADE);
+
+        //this.player.body.bounce.y = 0.2;
+        //this.player.body.allowGravity = false;
+        //this.player.body.checkCollision.left = false;
+        //this.player.body.checkCollision.right = false;
+        //this.player.body.checkCollision.up = false;
+        this.player.body.collideWorldBounds = true;
+        this.player.body.setSize(8, 16, 4, 0);
+
+        this.player.animations.add('run-left', [6, 7, 8], 12, true);
+        this.player.animations.add('idle-left', [5], 12, true);
+        this.player.animations.add('jump-left', [9], 12, true)
+        this.player.animations.add('run-right', [1, 2, 3], 12, true);
+        this.player.animations.add('idle-right', [0], 12, true);
+        this.player.animations.add('jump-right', [4], 12, true)
+        this.player.animations.add('climb', [10, 11, 12, 13], 12, true);
+
+        game.camera.follow(this.player);
+
+        this.cursors = game.input.keyboard.createCursorKeys();
+        this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+    };
+
+    that.update = function () {
+
+        this.canClimb = false;
+        var climbTiles = this.climbLayer.getTiles(this.player.body.x, this.player.body.y, this.player.body.width, this.player.body.height, false, false);
+        for (var c = 0; c < climbTiles.length; c++) {
+            if (climbTiles[c].index > -1) {
+                this.canClimb = true;
+            }
+        }
+
+        if (this.isClimbing && !this.canClimb) {
+            this.isClimbing = false;
+            this.player.body.allowGravity = true;
+        }
+
+        if (this.cursors.up.isDown && game.time.now > this.climbTimer) {
+            //console.log('x:' + this.player.body.x + ' y:' + this.player.body.y + 'w:' + this.player.body.width + ' h:' + this.player.body.height);
+            //console.log(this.canClimb);
+            if (this.canClimb && !this.isClimbing) {
+                this.isClimbing = true;
+                this.justClimbed = true;
+                this.player.body.allowGravity = false;
+                this.player.body.checkCollision.left = false;
+                this.player.body.checkCollision.right = false;
+                this.player.body.checkCollision.up = false;
+                this.climbTimer = game.time.now + 750;
+            }
+        }
+
+        if (!this.isClimbing && this.justClimbed && this.player.body.velocity.y > 0) {
+            this.justClimbed = false;
+            this.player.body.checkCollision.left = true;
+            this.player.body.checkCollision.right = true;
+            this.player.body.checkCollision.up = true;
+        }
+
+        game.physics.arcade.collide(this.player, this.layer);
+
+        if (this.jumpButton.isDown && (this.player.body.onFloor() || this.isClimbing) && game.time.now > this.jumpTimer) {
+            this.player.body.velocity.y = -300;
+            this.jumpTimer = game.time.now + 750;
+            if (this.isClimbing) {
+                this.climbTimer = game.time.now + 750;
+                this.isClimbing = false;
+                this.player.body.allowGravity = true;
+            }
+        }
+
+
+        if (this.isClimbing) {
+
+            this.player.animations.play('climb');
+
+            if (this.cursors.up.isDown) {
+                this.player.body.velocity.x = 0;
+                this.player.body.velocity.y = -50;
+            } else if (this.cursors.down.isDown) {
+                this.player.body.velocity.x = 0;
+                this.player.body.velocity.y = 50;
+            } else if (this.cursors.left.isDown) {
+                this.player.body.velocity.x = -50;
+                this.player.body.velocity.y = 0;
+            } else if (this.cursors.right.isDown) {
+                this.player.body.velocity.x = 50;
+                this.player.body.velocity.y = 0;
+            } else {
+                this.player.animations.stop();
+                this.player.body.velocity.x = 0;
+                this.player.body.velocity.y = 0;
+            }
+
+        } else {
+            // not climbing
+            this.player.body.velocity.x = 0;
+
+            if (this.cursors.left.isDown) {
+                this.player.body.velocity.x = -125;
+
+                this.facing = 'left';
+                if (this.player.body.onFloor()) {
+                    this.player.animations.play('run-left');
+                } else {
+                    this.player.animations.play('jump-left');
+                }
+
+            } else if (this.cursors.right.isDown) {
+                this.player.body.velocity.x = 125;
+
+                this.facing = 'right';
+                if (this.player.body.onFloor()) {
+                    this.player.animations.play('run-right');
+                } else {
+                    this.player.animations.play('jump-right');
+                }
+
+            } else {
+
+                if (this.player.body.onFloor()) {
+                    if (this.facing == 'left') {
+                        this.player.animations.play('idle-left');
+                    } else {
+                        this.player.animations.play('idle-right');
+                    }
+                } else {
+                    if (this.facing == 'left') {
+                        this.player.animations.play('jump-left');
+                    } else {
+                        this.player.animations.play('jump-right');
+                    }
+                }
+            }
+        }
 
     };
 
     that.resize = function () {
 
-        var text = this.text;
-        text.x = game.world.centerX;
-        text.y = game.world.centerY;
+        clearTimeout(that.resizeTO);
+        that.resizeTO = setTimeout(function () {
+            that.layer.resize(game.camera.width, game.camera.height);
+            that.climbLayer.resize(game.camera.width, game.camera.height);
+        }, 1000);
 
     };
 
     that.shutdown = function () {
 
-        this.text = undefined;
+        this.map = undefined;
+        this.layer = undefined;
+        this.climbLayer = undefined;
+        this.player = undefined;
+        this.cursors = undefined;
+        this.jumpButton = undefined;
 
     };
 
@@ -108,8 +282,9 @@ var createLoadState =  function () {
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
         //game.load.image('square', 'assets/sprites/square.png');
         //game.load.audio('sfx', 'assets/sounds/fx_mixdown.mp3');
-        //game.load.audio('ambient', ['assets/audio/ambient_mixdown.mp3', 'assets/audio/ambient_mixdown.ogg']);
-        // ...
+        game.load.tilemap('sandbox', 'assets/tilemaps/data/sandbox.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.image('groundTiles', 'assets/tilemaps/tiles/groundTiles.png');
+        game.load.spritesheet('tilda', 'assets/sprites/tilda.png', 16, 16);
 
         game.load.start();
 
@@ -228,7 +403,7 @@ var createMenuState = function () {
         if (this.spaceKey.downDuration(1000) && !this.switched) {
             //console.log('switched');
             this.switched = true;
-            game.state.start('game');
+            game.state.start('sandbox');
         }
 
         this.blinkCount++;
@@ -332,6 +507,12 @@ var createSplashState = function () {
 
 var splashState = createSplashState();
 
+var sandboxState = createGameState();
+
+sandboxState.tilemapName = 'sandbox';
+sandboxState.tilesetImageName = 'groundTiles';
+sandboxState.startPoint = {x: 64, y: 1776};
+
 var game;
 var gameData;
 
@@ -350,8 +531,8 @@ var ambient;
 var audioFallback = (Phaser.Device.isAndroidStockBrowser()) ? true : false;
 window.PhaserGlobal = { disableWebAudio: audioFallback };
 
-var colors = {normalBG: '#2c3e50', normalStroke: '#ecf0f1'};
-var tints = {normalBG: 0x2c3e50, normalStroke: 0xecf0f1};
+var colors = {normalBG: '#91d2d9', normalStroke: '#f2785c'};
+var tints = {normalBG: 0x91d2d9, normalStroke: 0xf2785c};
 
 var socket = io();
 
@@ -364,6 +545,7 @@ window.onload = function() {
     game.state.add('splash', splashState);
     game.state.add('menu', menuState);
     game.state.add('game', gameState);
+    game.state.add('sandbox', sandboxState);
 
     game.state.start('boot');
 

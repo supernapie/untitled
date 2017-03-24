@@ -16,8 +16,8 @@ var ambient;
 var audioFallback = (Phaser.Device.isAndroidStockBrowser()) ? true : false;
 window.PhaserGlobal = { disableWebAudio: audioFallback };
 
-var colors = {normalBG: '#2c3e50', normalStroke: '#ecf0f1'};
-var tints = {normalBG: 0x2c3e50, normalStroke: 0xecf0f1};
+var colors = {normalBG: '#91d2d9', normalStroke: '#f2785c'};
+var tints = {normalBG: 0x91d2d9, normalStroke: 0xf2785c};
 
 var socket = io();
 
@@ -30,6 +30,7 @@ window.onload = function() {
     game.state.add('splash', splashState);
     game.state.add('menu', menuState);
     game.state.add('game', gameState);
+    game.state.add('sandbox', sandboxState);
 
     game.state.start('boot');
 

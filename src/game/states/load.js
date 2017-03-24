@@ -18,8 +18,9 @@ var createLoadState =  function () {
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
         //game.load.image('square', 'assets/sprites/square.png');
         //game.load.audio('sfx', 'assets/sounds/fx_mixdown.mp3');
-        //game.load.audio('ambient', ['assets/audio/ambient_mixdown.mp3', 'assets/audio/ambient_mixdown.ogg']);
-        // ...
+        game.load.tilemap('sandbox', 'assets/tilemaps/data/sandbox.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.image('groundTiles', 'assets/tilemaps/tiles/groundTiles.png');
+        game.load.spritesheet('tilda', 'assets/sprites/tilda.png', 16, 16);
 
         game.load.start();
 

@@ -36,7 +36,7 @@ var createMenuState = function () {
         if (this.spaceKey.downDuration(1000) && !this.switched) {
             //console.log('switched');
             this.switched = true;
-            game.state.start('game');
+            game.state.start('sandbox');
         }
 
         this.blinkCount++;
