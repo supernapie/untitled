@@ -118,6 +118,12 @@ var createGameState = function () {
         this.cursors = game.input.keyboard.createCursorKeys();
         this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
+        socket.on('newplayer', function (otherplayer) {
+            console.log(otherplayer);
+        });
+
+        socket.emit('newplayer', {x: this.startPoint.x, y: this.startPoint.y});
+
     };
 
     that.update = function () {
