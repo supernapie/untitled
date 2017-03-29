@@ -9,6 +9,8 @@ var createGameState = function () {
     that.cursors = undefined;
     that.jumpButton = undefined;
 
+    that.otherPlayers = undefined;
+
     // can/must set values in substate
     that.tilemapName = 'levelx';
     that.tilesetImageName = 'tilesx';
@@ -65,13 +67,37 @@ var createGameState = function () {
         this.cursors = game.input.keyboard.createCursorKeys();
         this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-        socket.on('newplayer', function (otherplayer) {
-            console.log(otherplayer);
+        this.otherPlayers = [];
+
+        socket.on('updateplayer', function (playerdata) {
+            console.log('updateplayer');
+            if (that.otherPlayers[playerdata.id]) {
+                that.otherPlayers[playerdata.id].x = playerdata.x;
+                that.otherPlayers[playerdata.id].y = playerdata.y;
+                that.otherPlayers[playerdata.id].animations.play(playerdata.ani);
+            } else {
+                that.otherPlayers[playerdata.id] = that.createOtherPlayer(playerdata);
+                that.otherPlayers[playerdata.id].animations.play(playerdata.ani);
+            }
         });
 
-        socket.emit('newplayer', {x: this.startPoint.x, y: this.startPoint.y});
-
     };
+
+    that.createOtherPlayer = function (newplayer) {
+
+        var otherPlayer = game.add.sprite(newplayer.x, newplayer.y, 'tilda');
+
+        otherPlayer.animations.add('run-left', [6, 7, 8], 12, true);
+        otherPlayer.animations.add('idle-left', [5], 12, true);
+        otherPlayer.animations.add('jump-left', [9], 12, true)
+        otherPlayer.animations.add('run-right', [1, 2, 3], 12, true);
+        otherPlayer.animations.add('idle-right', [0], 12, true);
+        otherPlayer.animations.add('jump-right', [4], 12, true)
+        otherPlayer.animations.add('climb', [10, 11, 12, 13], 12, true);
+
+        return otherPlayer;
+
+    }
 
     that.update = function () {
 
@@ -185,6 +211,9 @@ var createGameState = function () {
                 }
             }
         }
+
+        // TODO: if idle do not emit
+        socket.emit('updateplayer', {x: this.player.x, y: this.player.y, ani: this.player.animations.name});
 
     };
 

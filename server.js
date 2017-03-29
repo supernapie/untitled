@@ -10,13 +10,22 @@ app.get('/', function(req, res){
     res.sendFile(__dirname + '/pub/index.html');
 });
 
+var players = [];
+
 io.on('connection', function(socket){
 
     console.log('a player connected');
 
-    socket.on('newplayer', function(player) {
-        console.log(player);
-        socket.broadcast.emit('newplayer', player);
+    var id = players.length;
+    var player = {id: id, x: 0, y: 0, ani: 'idle-left'};
+    players.push(player);
+
+    socket.on('updateplayer', function(playerdata) {
+        //console.log('playerdata');
+        player.x = (playerdata.x) ? playerdata.x : 0;
+        player.y = (playerdata.y) ? playerdata.y : 0;
+        player.ani = (playerdata.ani) ? playerdata.ani : 'idle-left';
+        socket.broadcast.emit('updateplayer', player);
     });
 
     socket.on('disconnect', function(){

@@ -11,6 +11,9 @@ var createBootState = function () {
         game.stage.smoothed = false; // none pixelated effect
         game.input.mouse.capture = true;
 
+        // do not pause game when browser window loses focus
+        game.stage.disableVisibilityChange = true;
+
         // go on to preloading
         game.state.start('load');
 
