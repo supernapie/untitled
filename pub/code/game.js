@@ -99,9 +99,9 @@ var createGameState = function () {
         //this.climbLayer.debug = true;
         //this.climbLayer.resizeWorld();
 
-        this.player = game.add.sprite(this.startPoint.x, this.startPoint.y, 'tilda');
-        game.physics.enable(this.player, Phaser.Physics.ARCADE);
+        this.player = this.createSimplePlayer({x: this.startPoint.x, y: this.startPoint.y});
 
+        game.physics.enable(this.player, Phaser.Physics.ARCADE);
         //this.player.body.bounce.y = 0.2;
         //this.player.body.allowGravity = false;
         //this.player.body.checkCollision.left = false;
@@ -109,14 +109,6 @@ var createGameState = function () {
         //this.player.body.checkCollision.up = false;
         this.player.body.collideWorldBounds = true;
         this.player.body.setSize(8, 16, 4, 0);
-
-        this.player.animations.add('run-left', [6, 7, 8], 12, true);
-        this.player.animations.add('idle-left', [5], 12, true);
-        this.player.animations.add('jump-left', [9], 12, true)
-        this.player.animations.add('run-right', [1, 2, 3], 12, true);
-        this.player.animations.add('idle-right', [0], 12, true);
-        this.player.animations.add('jump-right', [4], 12, true)
-        this.player.animations.add('climb', [10, 11, 12, 13], 12, true);
 
         game.camera.follow(this.player);
 
@@ -132,26 +124,26 @@ var createGameState = function () {
                 that.otherPlayers[playerdata.id].y = playerdata.y;
                 that.otherPlayers[playerdata.id].animations.play(playerdata.ani);
             } else {
-                that.otherPlayers[playerdata.id] = that.createOtherPlayer(playerdata);
+                that.otherPlayers[playerdata.id] = that.createSimplePlayer(playerdata);
                 that.otherPlayers[playerdata.id].animations.play(playerdata.ani);
             }
         });
 
     };
 
-    that.createOtherPlayer = function (newplayer) {
+    that.createSimplePlayer = function (playerdata) {
 
-        var otherPlayer = game.add.sprite(newplayer.x, newplayer.y, 'tilda');
+        var simplePlayer = game.add.sprite(playerdata.x, playerdata.y, 'tilda');
 
-        otherPlayer.animations.add('run-left', [6, 7, 8], 12, true);
-        otherPlayer.animations.add('idle-left', [5], 12, true);
-        otherPlayer.animations.add('jump-left', [9], 12, true)
-        otherPlayer.animations.add('run-right', [1, 2, 3], 12, true);
-        otherPlayer.animations.add('idle-right', [0], 12, true);
-        otherPlayer.animations.add('jump-right', [4], 12, true)
-        otherPlayer.animations.add('climb', [10, 11, 12, 13], 12, true);
+        simplePlayer.animations.add('run-left', [6, 7, 8], 12, true);
+        simplePlayer.animations.add('idle-left', [5], 12, true);
+        simplePlayer.animations.add('jump-left', [9], 12, true)
+        simplePlayer.animations.add('run-right', [1, 2, 3], 12, true);
+        simplePlayer.animations.add('idle-right', [0], 12, true);
+        simplePlayer.animations.add('jump-right', [4], 12, true)
+        simplePlayer.animations.add('climb', [10, 11, 12, 13], 12, true);
 
-        return otherPlayer;
+        return simplePlayer;
 
     }
 
