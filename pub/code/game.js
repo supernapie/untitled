@@ -67,6 +67,7 @@ var createGameState = function () {
 
     that.otherPlayers = undefined;
     that.lastUpdate = undefined;
+    that.forceUpdate = false;
 
     // can/must set values in substate
     that.tilemapName = 'levelx';
@@ -127,6 +128,7 @@ var createGameState = function () {
             } else {
                 that.otherPlayers[playerdata.id] = that.createSimplePlayer(playerdata);
                 that.otherPlayers[playerdata.id].animations.play(playerdata.ani);
+                that.forceUpdate = true;
             }
         });
 
@@ -263,11 +265,12 @@ var createGameState = function () {
             }
         }
 
-        if (this.player.x !== this.lastUpdate.x || this.player.y !== this.lastUpdate.y || this.player.animations.name !== this.lastUpdate.ani) {
+        if (this.forceUpdate || this.player.x !== this.lastUpdate.x || this.player.y !== this.lastUpdate.y || this.player.animations.name !== this.lastUpdate.ani) {
             this.lastUpdate.x = this.player.x;
             this.lastUpdate.y = this.player.y;
             this.lastUpdate.ani = this.player.animations.name;
             socket.emit('updateplayer', this.lastUpdate);
+            this.forceUpdate = false;
         }
     };
 
