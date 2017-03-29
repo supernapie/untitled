@@ -10,6 +10,7 @@ var createGameState = function () {
     that.jumpButton = undefined;
 
     that.otherPlayers = undefined;
+    that.lastUpdate = undefined;
 
     // can/must set values in substate
     that.tilemapName = 'levelx';
@@ -72,6 +73,8 @@ var createGameState = function () {
                 that.otherPlayers[playerdata.id].animations.play(playerdata.ani);
             }
         });
+
+        this.lastUpdate = {x: 0, y: 0, ani: 'idle-left'};
 
     };
 
@@ -204,9 +207,12 @@ var createGameState = function () {
             }
         }
 
-        // TODO: if idle do not emit
-        socket.emit('updateplayer', {x: this.player.x, y: this.player.y, ani: this.player.animations.name});
-
+        if (this.player.x !== this.lastUpdate.x || this.player.y !== this.lastUpdate.y || this.player.animations.name !== this.lastUpdate.ani) {
+            this.lastUpdate.x = this.player.x;
+            this.lastUpdate.y = this.player.y;
+            this.lastUpdate.ani = this.player.animations.name;
+            socket.emit('updateplayer', this.lastUpdate);
+        }
     };
 
     that.resize = function () {
