@@ -35,7 +35,7 @@ var createGameState = function () {
         this.map = game.add.tilemap(this.tilemapName);
         this.map.addTilesetImage(this.tilesetImageName);
 
-        this.map.setCollisionByExclusion([13, 14, 15]);
+        this.map.setCollisionByExclusion([14, 15, 16]);
 
         this.layer = this.map.createLayer('Tile Layer 1');
         //this.layer.debug = true;
