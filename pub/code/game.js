@@ -120,7 +120,7 @@ var createGameState = function () {
         this.otherPlayers = [];
 
         socket.on('updateplayer', function (playerdata) {
-            console.log('updateplayer');
+            //console.log('updateplayer');
             if (that.otherPlayers[playerdata.id]) {
                 that.otherPlayers[playerdata.id].x = playerdata.x;
                 that.otherPlayers[playerdata.id].y = playerdata.y;
