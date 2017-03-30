@@ -4,7 +4,6 @@ var createGameState = function () {
 
     that.map = undefined;
     that.layer = undefined;
-    that.climbLayer = undefined;
     that.player = undefined;
     that.cursors = undefined;
     that.jumpButton = undefined;
@@ -35,15 +34,12 @@ var createGameState = function () {
         this.map = game.add.tilemap(this.tilemapName);
         this.map.addTilesetImage(this.tilesetImageName);
 
-        this.map.setCollisionByExclusion([14, 15, 16]);
+        this.map.setCollisionByExclusion([14, 15, 16, 207]);
 
-        this.layer = this.map.createLayer('Tile Layer 1');
+        this.layer = this.map.createLayer('baselayer');
         //this.layer.debug = true;
         this.layer.resizeWorld();
 
-        this.climbLayer = this.map.createLayer('Tile Layer 2');
-        //this.climbLayer.debug = true;
-        //this.climbLayer.resizeWorld();
 
         this.player = this.createSimplePlayer({x: this.startPoint.x, y: this.startPoint.y});
 
@@ -99,9 +95,9 @@ var createGameState = function () {
     that.update = function () {
 
         this.canClimb = false;
-        var climbTiles = this.climbLayer.getTiles(this.player.body.x, this.player.body.y, this.player.body.width, this.player.body.height, false, false);
+        var climbTiles = this.layer.getTiles(this.player.body.x, this.player.body.y, this.player.body.width, this.player.body.height, false, false);
         for (var c = 0; c < climbTiles.length; c++) {
-            if (climbTiles[c].index > -1) {
+            if (climbTiles[c].index > 192) {
                 this.canClimb = true;
             }
         }
@@ -223,7 +219,6 @@ var createGameState = function () {
         clearTimeout(that.resizeTO);
         that.resizeTO = setTimeout(function () {
             that.layer.resize(game.camera.width, game.camera.height);
-            that.climbLayer.resize(game.camera.width, game.camera.height);
         }, 1000);
 
     };
@@ -232,7 +227,6 @@ var createGameState = function () {
 
         this.map = undefined;
         this.layer = undefined;
-        this.climbLayer = undefined;
         this.player = undefined;
         this.cursors = undefined;
         this.jumpButton = undefined;
