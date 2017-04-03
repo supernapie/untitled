@@ -87,6 +87,7 @@ var createGameState = function () {
         simplePlayer.animations.add('idle-right', [0], 12, true);
         simplePlayer.animations.add('jump-right', [4], 12, true)
         simplePlayer.animations.add('climb', [10, 11, 12, 13], 12, true);
+        simplePlayer.animations.add('climb-idle', [10], 12, true);
 
         return simplePlayer;
 
@@ -158,7 +159,7 @@ var createGameState = function () {
                 this.player.body.velocity.x = 50;
                 this.player.body.velocity.y = 0;
             } else {
-                this.player.animations.stop();
+                this.player.animations.play('climb-idle');
                 this.player.body.velocity.x = 0;
                 this.player.body.velocity.y = 0;
             }
