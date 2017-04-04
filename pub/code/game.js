@@ -118,12 +118,14 @@ var createGameState = function () {
         socket.on('updateplayer', function (playerdata) {
             //console.log('updateplayer');
             if (that.otherPlayers[playerdata.id]) {
-                that.otherPlayers[playerdata.id].x = playerdata.x;
-                that.otherPlayers[playerdata.id].y = playerdata.y;
+                that.otherPlayers[playerdata.id].xHome = playerdata.x;
+                that.otherPlayers[playerdata.id].yHome = playerdata.y;
                 that.otherPlayers[playerdata.id].animations.play(playerdata.ani);
             } else {
                 that.otherPlayers[playerdata.id] = that.createSimplePlayer(playerdata);
                 that.otherPlayers[playerdata.id].animations.play(playerdata.ani);
+                that.otherPlayers[playerdata.id].xHome = that.otherPlayers[playerdata.id].x;
+                that.otherPlayers[playerdata.id].yHome = that.otherPlayers[playerdata.id].y;
                 that.forceUpdate = true;
             }
         });
@@ -268,6 +270,15 @@ var createGameState = function () {
             this.lastUpdate.ani = this.player.animations.name;
             socket.emit('updateplayer', this.lastUpdate);
             this.forceUpdate = false;
+        }
+
+        this.otherPlayers.forEach(this.smoothOtherPlayer);
+    };
+
+    that.smoothOtherPlayer = function (otherPlayer, index) {
+        if (otherPlayer !== undefined) {
+            otherPlayer.x += (otherPlayer.xHome - otherPlayer.x) / 2;
+            otherPlayer.y += (otherPlayer.yHome - otherPlayer.y) / 2;
         }
     };
 
