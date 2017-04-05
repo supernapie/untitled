@@ -80,6 +80,10 @@ var createGameState = function () {
     that.isClimbing = false;
     that.justClimbed = false;
     that.climbTimer = 0;
+    that.tileUp = [1,2,3,4,5,6,7,8,9,10,11,12,13,17,18,19];
+    that.tileDown = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+    that.tileLeft = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+    that.tileRight = [1,2,3,4,5,6,7,8,9,10,11,12,13];
     that.resizeTO = 0;
 
     that.create = function () {
@@ -93,6 +97,7 @@ var createGameState = function () {
         this.map.addTilesetImage(this.tilesetImageName);
 
         this.map.setCollisionByExclusion([14, 15, 16, 207]);
+        this.map.forEach(this.setCollisionDirectionOf, this, 0, 0, 128, 128);
 
         this.layer = this.map.createLayer('baselayer');
         //this.layer.debug = true;
@@ -158,7 +163,15 @@ var createGameState = function () {
 
         return simplePlayer;
 
-    }
+    };
+
+    that.setCollisionDirectionOf = function (tile) {
+        //console.log(tile.index);
+        tile.collideUp = (that.tileUp.indexOf(tile.index) > -1) ? true : false;
+        tile.collideDown = (that.tileDown.indexOf(tile.index) > -1) ? true : false;
+        tile.collideLeft = (that.tileLeft.indexOf(tile.index) > -1) ? true : false;
+        tile.collideRight = (that.tileRight.indexOf(tile.index) > -1) ? true : false;
+    };
 
     that.update = function () {
 
