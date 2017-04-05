@@ -130,6 +130,13 @@ var createGameState = function () {
             }
         });
 
+        socket.on('removeplayer', function (playerdata) {
+            if (that.otherPlayers[playerdata.id]) {
+                that.otherPlayers[playerdata.id].destroy();
+                that.otherPlayers[playerdata.id] = undefined;
+            }
+        });
+
         this.lastUpdate = {x: 0, y: 0, ani: 'idle-left'};
 
     };
