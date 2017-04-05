@@ -22,7 +22,7 @@ module.exports = function(grunt) {
         uglify: {
             options: {
                 mangle: false,
-                banner: '/*! <%= pkg.name %> v<%= pkg.version %> - <%= pkg.author %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */'+'\n\n/*! Phaser v2.7.3 - http://phaser.io - @photonstorm - (c) 2017 Photon Storm Ltd. */\n\n'
+                banner: '/*! <%= pkg.name %> v<%= pkg.version %> - <%= pkg.author %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */'+'\n\n/*! Phaser v2.7.5 - http://phaser.io - @photonstorm - (c) 2017 Photon Storm Ltd. */\n\n'
             },
             src_target: {
                 files: {
@@ -45,7 +45,8 @@ module.exports = function(grunt) {
         require('./server.js');
     });
 
-    grunt.registerTask('default', ['concat', 'uglify:src_target', 'server', 'open', 'watch']);
+    //grunt.registerTask('default', ['concat', 'uglify:src_target', 'server', 'open', 'watch']);
+    grunt.registerTask('default', ['concat', 'uglify:src_target', 'server', 'watch']);
 
     grunt.registerTask('compile', ['concat', 'uglify:src_target']);
 
