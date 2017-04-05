@@ -33,7 +33,7 @@ var createMenuState = function () {
 
     that.update = function () {
 
-        if (this.spaceKey.downDuration(1000) && !this.switched) {
+        if ((pad1.justPressed(Phaser.Gamepad.XBOX360_A) || this.spaceKey.downDuration(1000)) && !this.switched) {
             //console.log('switched');
             this.switched = true;
             game.state.start('sandbox');
@@ -55,7 +55,7 @@ var createMenuState = function () {
         // play the sounds on this interaction otherwise they won't start on mobile, because of stupid human interface guidelines
         //ambient.loopFull();
         //fx.play('coin');
-        game.state.start('game');
+        game.state.start('sandbox');
 
     };
 

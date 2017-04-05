@@ -14,6 +14,9 @@ var createBootState = function () {
         // do not pause game when browser window loses focus
         game.stage.disableVisibilityChange = true;
 
+        game.input.gamepad.start();
+        pad1 = game.input.gamepad.pad1;
+
         // go on to preloading
         game.state.start('load');
 

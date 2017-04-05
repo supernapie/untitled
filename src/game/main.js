@@ -1,6 +1,8 @@
 var game;
 var gameData;
 
+var pad1;
+
 var fontName = 'sans-serif';
 var googleFontName = 'Varela Round';
 var titleFontName = 'serif';

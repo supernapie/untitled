@@ -43,6 +43,9 @@ var createBootState = function () {
         // do not pause game when browser window loses focus
         game.stage.disableVisibilityChange = true;
 
+        game.input.gamepad.start();
+        pad1 = game.input.gamepad.pad1;
+
         // go on to preloading
         game.state.start('load');
 
@@ -102,7 +105,6 @@ var createGameState = function () {
         this.layer = this.map.createLayer('baselayer');
         //this.layer.debug = true;
         this.layer.resizeWorld();
-
 
         this.player = this.createSimplePlayer({x: this.startPoint.x, y: this.startPoint.y});
 
@@ -188,7 +190,7 @@ var createGameState = function () {
             this.player.body.allowGravity = true;
         }
 
-        if (this.cursors.up.isDown && game.time.now > this.climbTimer) {
+        if ((this.cursors.up.isDown || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_UP) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1) && game.time.now > this.climbTimer) {
             //console.log('x:' + this.player.body.x + ' y:' + this.player.body.y + 'w:' + this.player.body.width + ' h:' + this.player.body.height);
             //console.log(this.canClimb);
             if (this.canClimb && !this.isClimbing) {
@@ -211,7 +213,7 @@ var createGameState = function () {
 
         game.physics.arcade.collide(this.player, this.layer);
 
-        if (this.jumpButton.isDown && (this.player.body.onFloor() || this.isClimbing) && game.time.now > this.jumpTimer) {
+        if ((this.jumpButton.isDown || pad1.justPressed(Phaser.Gamepad.XBOX360_A)) && (this.player.body.onFloor() || this.isClimbing) && game.time.now > this.jumpTimer) {
             this.player.body.velocity.y = -300;
             this.jumpTimer = game.time.now + 750;
             if (this.isClimbing) {
@@ -226,16 +228,16 @@ var createGameState = function () {
 
             this.player.animations.play('climb');
 
-            if (this.cursors.up.isDown) {
+            if (this.cursors.up.isDown || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_UP) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1) {
                 this.player.body.velocity.x = 0;
                 this.player.body.velocity.y = -50;
-            } else if (this.cursors.down.isDown) {
+            } else if (this.cursors.down.isDown || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_DOWN) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) > 0.1) {
                 this.player.body.velocity.x = 0;
                 this.player.body.velocity.y = 50;
-            } else if (this.cursors.left.isDown) {
+            } else if (this.cursors.left.isDown || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1) {
                 this.player.body.velocity.x = -50;
                 this.player.body.velocity.y = 0;
-            } else if (this.cursors.right.isDown) {
+            } else if (this.cursors.right.isDown || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1) {
                 this.player.body.velocity.x = 50;
                 this.player.body.velocity.y = 0;
             } else {
@@ -248,7 +250,7 @@ var createGameState = function () {
             // not climbing
             this.player.body.velocity.x = 0;
 
-            if (this.cursors.left.isDown) {
+            if (this.cursors.left.isDown || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1) {
                 this.player.body.velocity.x = -125;
 
                 this.facing = 'left';
@@ -258,7 +260,7 @@ var createGameState = function () {
                     this.player.animations.play('jump-left');
                 }
 
-            } else if (this.cursors.right.isDown) {
+            } else if (this.cursors.right.isDown || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1) {
                 this.player.body.velocity.x = 125;
 
                 this.facing = 'right';
@@ -475,7 +477,7 @@ var createMenuState = function () {
 
     that.update = function () {
 
-        if (this.spaceKey.downDuration(1000) && !this.switched) {
+        if ((pad1.justPressed(Phaser.Gamepad.XBOX360_A) || this.spaceKey.downDuration(1000)) && !this.switched) {
             //console.log('switched');
             this.switched = true;
             game.state.start('sandbox');
@@ -497,7 +499,7 @@ var createMenuState = function () {
         // play the sounds on this interaction otherwise they won't start on mobile, because of stupid human interface guidelines
         //ambient.loopFull();
         //fx.play('coin');
-        game.state.start('game');
+        game.state.start('sandbox');
 
     };
 
@@ -590,6 +592,8 @@ sandboxState.startPoint = {x: 64, y: 1776};
 
 var game;
 var gameData;
+
+var pad1;
 
 var fontName = 'sans-serif';
 var googleFontName = 'Varela Round';
