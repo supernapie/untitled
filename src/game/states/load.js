@@ -22,6 +22,10 @@ var createLoadState =  function () {
         game.load.image('groundTiles', 'assets/tilemaps/tiles/groundTiles.png');
         game.load.spritesheet('tilda', 'assets/sprites/tilda.png', 16, 16);
 
+        game.load.image('dpad', 'assets/controls/dpad.png');
+        game.load.image('touchsegment', 'assets/controls/touchsegment.png');
+        game.load.image('touch', 'assets/controls/touch.png')
+
         game.load.start();
 
     };
