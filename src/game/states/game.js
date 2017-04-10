@@ -24,7 +24,7 @@ var createGameState = function () {
     that.isClimbing = false;
     that.justClimbed = false;
     that.climbTimer = 0;
-    that.tileOnlyUp = [193,194,195, 176,178,179];
+    that.tileOnlyUp = [176,178,179, 193,194,195, 209,210,211, 225,226,227, 241,242,243];
     that.tileUp = [1,2,3,4,5,6,7,8,9,10,11,12,13, 17,18,19, 193,194,195];
     that.tileDown = [1,2,3,4,5,6,7,8,9,10,11,12,13];
     that.tileLeft = [1,2,3,4,5,6,7,8,9,10,11,12,13];
@@ -45,6 +45,9 @@ var createGameState = function () {
         this.map.setCollisionBetween(1, 112);
         this.map.setCollisionBetween(176, 179);
         this.map.setCollisionBetween(193, 195);
+        this.map.setCollisionBetween(209, 211);
+        this.map.setCollisionBetween(225, 227);
+        this.map.setCollisionBetween(241, 243);
         this.map.forEach(this.setCollisionDirectionOf, this, 0, 0, 128, 128);
 
         this.layer = this.map.createLayer('baselayer');
