@@ -22,7 +22,6 @@ var createGameState = function () {
     that.jumpTimer = 0;
     that.canClimb = false;
     that.isClimbing = false;
-    that.justClimbed = false;
     that.climbTimer = 0;
     that.tileOnlyUp = [161,162,163, 177,178,179, 193,194,195, 209,210,211, 225,226,227, 241,242,243];
     that.tileUp = [1,2,3,4,5,6,7,8,9,10,11,12,13, 17,18,19, 193,194,195];
@@ -151,20 +150,9 @@ var createGameState = function () {
             //console.log(this.canClimb);
             if (this.canClimb && !this.isClimbing) {
                 this.isClimbing = true;
-                this.justClimbed = true;
                 this.player.body.allowGravity = false;
-                this.player.body.checkCollision.left = false;
-                this.player.body.checkCollision.right = false;
-                this.player.body.checkCollision.up = false;
                 this.climbTimer = game.time.now + 750;
             }
-        }
-
-        if (!this.isClimbing && this.justClimbed && this.player.body.velocity.y > 0) {
-            this.justClimbed = false;
-            this.player.body.checkCollision.left = true;
-            this.player.body.checkCollision.right = true;
-            this.player.body.checkCollision.up = true;
         }
 
         game.physics.arcade.collide(this.player, this.layer);
