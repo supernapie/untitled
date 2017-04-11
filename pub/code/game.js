@@ -251,7 +251,7 @@ var createGameState = function () {
     that.isClimbing = false;
     that.justClimbed = false;
     that.climbTimer = 0;
-    that.tileOnlyUp = [177,178,179, 193,194,195, 209,210,211, 225,226,227, 241,242,243];
+    that.tileOnlyUp = [161,162,163, 177,178,179, 193,194,195, 209,210,211, 225,226,227, 241,242,243];
     that.tileUp = [1,2,3,4,5,6,7,8,9,10,11,12,13, 17,18,19, 193,194,195];
     that.tileDown = [1,2,3,4,5,6,7,8,9,10,11,12,13];
     that.tileLeft = [1,2,3,4,5,6,7,8,9,10,11,12,13];
@@ -270,6 +270,7 @@ var createGameState = function () {
 
         //this.map.setCollisionByExclusion([14,15,16, 196,197,198,199,200,201,202,203,204,205,206,207,208]);
         this.map.setCollisionBetween(1, 112);
+        this.map.setCollisionBetween(161, 163);
         this.map.setCollisionBetween(177, 179);
         this.map.setCollisionBetween(193, 195);
         this.map.setCollisionBetween(209, 211);
