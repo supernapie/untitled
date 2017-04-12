@@ -243,6 +243,7 @@ var createGameState = function () {
     that.tilemapName = 'levelx';
     that.tilesetImageName = 'tilesx';
     that.startPoint = {x: 32, y: 32};
+    that.tileOnlyUp = [161,162,163, 177,178,179, 193,194,195, 209,210,211, 225,226,227, 241,242,243];
 
     // private, can't set values change
     that.facing = 'left';
@@ -250,11 +251,6 @@ var createGameState = function () {
     that.canClimb = false;
     that.isClimbing = false;
     that.climbTimer = 0;
-    that.tileOnlyUp = [161,162,163, 177,178,179, 193,194,195, 209,210,211, 225,226,227, 241,242,243];
-    that.tileUp = [1,2,3,4,5,6,7,8,9,10,11,12,13, 17,18,19, 193,194,195];
-    that.tileDown = [1,2,3,4,5,6,7,8,9,10,11,12,13];
-    that.tileLeft = [1,2,3,4,5,6,7,8,9,10,11,12,13];
-    that.tileRight = [1,2,3,4,5,6,7,8,9,10,11,12,13];
     that.resizeTO = 0;
 
     that.create = function () {
@@ -275,7 +271,7 @@ var createGameState = function () {
         this.map.setCollisionBetween(209, 211);
         this.map.setCollisionBetween(225, 227);
         this.map.setCollisionBetween(241, 243);
-        this.map.forEach(this.setCollisionDirectionOf, this, 0, 0, 128, 128);
+        this.map.forEach(this.setCollisionOnlyUp, this, 0, 0, 128, 128);
 
         this.layer = this.map.createLayer('baselayer');
         //this.layer.debug = true;
@@ -286,9 +282,6 @@ var createGameState = function () {
         game.physics.enable(this.player, Phaser.Physics.ARCADE);
         //this.player.body.bounce.y = 0.2;
         //this.player.body.allowGravity = false;
-        //this.player.body.checkCollision.left = false;
-        //this.player.body.checkCollision.right = false;
-        //this.player.body.checkCollision.up = false;
         this.player.body.collideWorldBounds = true;
         this.player.body.setSize(8, 16, 12, 16);
 
@@ -345,16 +338,12 @@ var createGameState = function () {
 
     };
 
-    that.setCollisionDirectionOf = function (tile) {
+    that.setCollisionOnlyUp = function (tile) {
         //console.log(tile.index);
         tile.collideUp = (that.tileOnlyUp.indexOf(tile.index) > -1) ? true : tile.collideUp;
         tile.collideDown = (that.tileOnlyUp.indexOf(tile.index) > -1) ? false : tile.collideDown;
         tile.collideLeft = (that.tileOnlyUp.indexOf(tile.index) > -1) ? false : tile.collideLeft;
         tile.collideRight = (that.tileOnlyUp.indexOf(tile.index) > -1) ? false : tile.collideRight;
-        //tile.collideUp = (that.tileUp.indexOf(tile.index) > -1) ? true : false;
-        //tile.collideDown = (that.tileDown.indexOf(tile.index) > -1) ? true : false;
-        //tile.collideLeft = (that.tileLeft.indexOf(tile.index) > -1) ? true : false;
-        //tile.collideRight = (that.tileRight.indexOf(tile.index) > -1) ? true : false;
     };
 
     that.update = function () {
