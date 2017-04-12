@@ -263,15 +263,8 @@ var createGameState = function () {
         this.map = game.add.tilemap(this.tilemapName);
         this.map.addTilesetImage(this.tilesetImageName);
 
-        //this.map.setCollisionByExclusion([14,15,16, 196,197,198,199,200,201,202,203,204,205,206,207,208]);
-        this.map.setCollisionBetween(1, 112);
-        this.map.setCollisionBetween(161, 163);
-        this.map.setCollisionBetween(177, 179);
-        this.map.setCollisionBetween(193, 195);
-        this.map.setCollisionBetween(209, 211);
-        this.map.setCollisionBetween(225, 227);
-        this.map.setCollisionBetween(241, 243);
-        this.map.forEach(this.setCollisionOnlyUp, this, 0, 0, 128, 128);
+        this.map.setCollisionBetween(1, 112); // always collide on all sides(walls,solid platforms,ceilings,...)
+        this.map.forEach(this.setCollisionOnlyUp, this, 0, 0, 128, 128); // only collide things falling on it(tops of climbing walls,...)
 
         this.layer = this.map.createLayer('baselayer');
         //this.layer.debug = true;
