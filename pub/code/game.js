@@ -239,6 +239,10 @@ var createGameState = function () {
     that.lastUpdate = undefined;
     that.forceUpdate = false;
 
+    // tweak movement feel
+    that.playerSpeedMax = 125;
+    that.playerSpeedChange = 10;
+
     // can/must set values in substate
     that.tilemapName = 'levelx';
     that.tilesetImageName = 'tilesx';
@@ -251,6 +255,7 @@ var createGameState = function () {
     that.canClimb = false;
     that.isClimbing = false;
     that.climbTimer = 0;
+    that.playerSpeed = 0;
     that.resizeTO = 0;
 
     that.create = function () {
@@ -320,10 +325,14 @@ var createGameState = function () {
 
         simplePlayer.animations.add('run-left', [6, 7, 8], 12, true);
         simplePlayer.animations.add('idle-left', [5], 12, true);
-        simplePlayer.animations.add('jump-left', [9], 12, true)
+        simplePlayer.animations.add('jump-left', [9], 12, true);
+        simplePlayer.animations.add('slide-left', [9], 12, true); // TODO: needs it's own frame
+        simplePlayer.animations.add('flail-left', [9], 12, true); // TODO: needs it's own frame
         simplePlayer.animations.add('run-right', [1, 2, 3], 12, true);
         simplePlayer.animations.add('idle-right', [0], 12, true);
-        simplePlayer.animations.add('jump-right', [4], 12, true)
+        simplePlayer.animations.add('jump-right', [4], 12, true);
+        simplePlayer.animations.add('slide-right', [4], 12, true); // TODO: needs it's own frame
+        simplePlayer.animations.add('flail-right', [4], 12, true); // TODO: needs it's own frame
         simplePlayer.animations.add('climb', [10, 11, 12, 13], 12, true);
         simplePlayer.animations.add('climb-idle', [10], 12, true);
 
@@ -388,21 +397,11 @@ var createGameState = function () {
             if (this.canClimb && !this.isClimbing) {
                 this.isClimbing = true;
                 this.player.body.allowGravity = false;
-                this.climbTimer = game.time.now + 750;
+                this.climbTimer = game.time.now + 250;
             }
         }
 
         game.physics.arcade.collide(this.player, this.layer);
-
-        if (keySpace && (this.player.body.onFloor() || this.isClimbing) && game.time.now > this.jumpTimer) {
-            this.player.body.velocity.y = -300;
-            this.jumpTimer = game.time.now + 750;
-            if (this.isClimbing) {
-                this.climbTimer = game.time.now + 750;
-                this.isClimbing = false;
-                this.player.body.allowGravity = true;
-            }
-        }
 
         if (this.isClimbing) {
 
@@ -426,12 +425,25 @@ var createGameState = function () {
                 this.player.body.velocity.y = 0;
             }
 
+            if (keySpace && game.time.now > this.jumpTimer) {
+                this.player.body.velocity.y = -250;
+                this.jumpTimer = game.time.now + 250;
+                this.climbTimer = game.time.now + 250;
+                this.isClimbing = false;
+                this.player.body.allowGravity = true;
+            }
+
         } else {
+
             // not climbing
+
             this.player.body.velocity.x = 0;
 
             if (keyLeft) {
-                this.player.body.velocity.x = -125;
+
+                this.playerSpeed -= this.playerSpeedChange;
+                this.playerSpeed = Math.max(this.playerSpeed, -this.playerSpeedMax);
+                this.player.body.velocity.x = this.playerSpeed;
 
                 this.facing = 'left';
                 if (this.player.body.onFloor()) {
@@ -441,7 +453,10 @@ var createGameState = function () {
                 }
 
             } else if (keyRight) {
-                this.player.body.velocity.x = 125;
+
+                this.playerSpeed += this.playerSpeedChange;
+                this.playerSpeed = Math.min(this.playerSpeed, this.playerSpeedMax);
+                this.player.body.velocity.x = this.playerSpeed;
 
                 this.facing = 'right';
                 if (this.player.body.onFloor()) {
@@ -451,6 +466,9 @@ var createGameState = function () {
                 }
 
             } else {
+
+                this.playerSpeed += (0 - this.playerSpeed) / 2;
+                this.player.body.velocity.x = this.playerSpeed;
 
                 if (this.player.body.onFloor()) {
                     if (this.facing == 'left') {
@@ -466,7 +484,19 @@ var createGameState = function () {
                     }
                 }
             }
-        }
+
+            if (keySpace && (this.player.body.onFloor() || this.player.body.onWall()) && game.time.now > this.jumpTimer) {
+                this.player.body.velocity.y = -250;
+                this.jumpTimer = game.time.now + 250;
+
+                if (this.player.body.blocked.left) {
+                    this.playerSpeed = this.playerSpeedMax;
+                } else if (this.player.body.blocked.right) {
+                    this.playerSpeed = - this.playerSpeedMax;
+                }
+            }
+
+        } // end climbing or not climbing
 
         // don't forget to animate :)
         this.player.animations.play(this.player.ani);
