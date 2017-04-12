@@ -66,12 +66,12 @@ var createGameState = function () {
             if (that.otherPlayers[playerdata.id]) {
                 that.otherPlayers[playerdata.id].xHome = playerdata.x;
                 that.otherPlayers[playerdata.id].yHome = playerdata.y;
-                that.otherPlayers[playerdata.id].animations.play(playerdata.ani);
+                that.otherPlayers[playerdata.id].ani = playerdata.ani;
             } else {
                 that.otherPlayers[playerdata.id] = that.createSimplePlayer(playerdata);
-                that.otherPlayers[playerdata.id].animations.play(playerdata.ani);
                 that.otherPlayers[playerdata.id].xHome = that.otherPlayers[playerdata.id].x;
                 that.otherPlayers[playerdata.id].yHome = that.otherPlayers[playerdata.id].y;
+                that.otherPlayers[playerdata.id].ani = playerdata.ani;
                 that.forceUpdate = true;
             }
         });
@@ -222,14 +222,17 @@ var createGameState = function () {
             this.forceUpdate = false;
         }
 
-        this.otherPlayers.forEach(this.smoothOtherPlayer);
+        this.otherPlayers.forEach(this.animateOtherPlayer);
     };
 
-    that.smoothOtherPlayer = function (otherPlayer, index) {
+    that.animateOtherPlayer = function (otherPlayer, index) {
+
         if (otherPlayer !== undefined) {
             otherPlayer.x += (otherPlayer.xHome - otherPlayer.x) / 2;
             otherPlayer.y += (otherPlayer.yHome - otherPlayer.y) / 2;
+            otherPlayer.animations.play(otherPlayer.ani);
         }
+
     };
 
     that.resize = function () {
