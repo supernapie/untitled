@@ -100,6 +100,8 @@ var createGameState = function () {
         simplePlayer.animations.add('climb', [10, 11, 12, 13], 12, true);
         simplePlayer.animations.add('climb-idle', [10], 12, true);
 
+        simplePlayer.ani = 'idle-left';
+
         return simplePlayer;
 
     };
@@ -152,7 +154,7 @@ var createGameState = function () {
 
         if (this.isClimbing) {
 
-            this.player.animations.play('climb');
+            this.player.ani = 'climb';
 
             if (this.cursors.up.isDown || game.touchControl.cursors.up || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_UP) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1) {
                 this.player.body.velocity.x = 0;
@@ -167,7 +169,7 @@ var createGameState = function () {
                 this.player.body.velocity.x = 50;
                 this.player.body.velocity.y = 0;
             } else {
-                this.player.animations.play('climb-idle');
+                this.player.ani = 'climb-idle';
                 this.player.body.velocity.x = 0;
                 this.player.body.velocity.y = 0;
             }
@@ -181,9 +183,9 @@ var createGameState = function () {
 
                 this.facing = 'left';
                 if (this.player.body.onFloor()) {
-                    this.player.animations.play('run-left');
+                    this.player.ani = 'run-left';
                 } else {
-                    this.player.animations.play('jump-left');
+                    this.player.ani = 'jump-left';
                 }
 
             } else if (this.cursors.right.isDown || game.touchControl.cursors.right || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1) {
@@ -191,33 +193,36 @@ var createGameState = function () {
 
                 this.facing = 'right';
                 if (this.player.body.onFloor()) {
-                    this.player.animations.play('run-right');
+                    this.player.ani = 'run-right';
                 } else {
-                    this.player.animations.play('jump-right');
+                    this.player.ani = 'jump-right';
                 }
 
             } else {
 
                 if (this.player.body.onFloor()) {
                     if (this.facing == 'left') {
-                        this.player.animations.play('idle-left');
+                        this.player.ani = 'idle-left';
                     } else {
-                        this.player.animations.play('idle-right');
+                        this.player.ani = 'idle-right';
                     }
                 } else {
                     if (this.facing == 'left') {
-                        this.player.animations.play('jump-left');
+                        this.player.ani = 'jump-left';
                     } else {
-                        this.player.animations.play('jump-right');
+                        this.player.ani = 'jump-right';
                     }
                 }
             }
         }
 
-        if (this.forceUpdate || this.player.x !== this.lastUpdate.x || this.player.y !== this.lastUpdate.y || this.player.animations.name !== this.lastUpdate.ani) {
+        // don't forget to animate :)
+        this.player.animations.play(this.player.ani);
+
+        if (this.forceUpdate || this.player.x !== this.lastUpdate.x || this.player.y !== this.lastUpdate.y || this.player.ani !== this.lastUpdate.ani) {
             this.lastUpdate.x = this.player.x;
             this.lastUpdate.y = this.player.y;
-            this.lastUpdate.ani = this.player.animations.name;
+            this.lastUpdate.ani = this.player.ani;
             socket.emit('updateplayer', this.lastUpdate);
             this.forceUpdate = false;
         }
