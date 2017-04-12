@@ -63,7 +63,7 @@ var createGameState = function () {
         //this.player.body.checkCollision.right = false;
         //this.player.body.checkCollision.up = false;
         this.player.body.collideWorldBounds = true;
-        this.player.body.setSize(8, 16, 4, 0);
+        this.player.body.setSize(8, 16, 12, 16);
 
         game.camera.follow(this.player);
 
