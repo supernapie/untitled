@@ -116,6 +116,32 @@ var createGameState = function () {
 
     that.update = function () {
 
+        // normalize player input
+
+        var keyUp = this.cursors.up.isDown
+                || game.touchControl.cursors.up
+                || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_UP)
+                || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1;
+
+        var keyDown = this.cursors.down.isDown
+                || game.touchControl.cursors.down
+                || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_DOWN)
+                || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) > 0.1;
+
+        var keyLeft = this.cursors.left.isDown
+                || game.touchControl.cursors.left
+                || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT)
+                || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1;
+
+        var keyRight = this.cursors.right.isDown
+                || game.touchControl.cursors.right
+                || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT)
+                || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1;
+
+        var keySpace = this.jumpButton.isDown
+                || game.touchControl.cursors.space
+                || pad1.justPressed(Phaser.Gamepad.XBOX360_A);
+
         this.canClimb = false;
         var climbTiles = this.layer.getTiles(this.player.body.x, this.player.body.y, this.player.body.width, this.player.body.height, false, false);
         for (var c = 0; c < climbTiles.length; c++) {
@@ -129,7 +155,7 @@ var createGameState = function () {
             this.player.body.allowGravity = true;
         }
 
-        if ((this.cursors.up.isDown || game.touchControl.cursors.up || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_UP) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1) && game.time.now > this.climbTimer) {
+        if (keyUp && game.time.now > this.climbTimer) {
             //console.log('x:' + this.player.body.x + ' y:' + this.player.body.y + 'w:' + this.player.body.width + ' h:' + this.player.body.height);
             //console.log(this.canClimb);
             if (this.canClimb && !this.isClimbing) {
@@ -141,7 +167,7 @@ var createGameState = function () {
 
         game.physics.arcade.collide(this.player, this.layer);
 
-        if ((this.jumpButton.isDown || game.touchControl.cursors.space || pad1.justPressed(Phaser.Gamepad.XBOX360_A)) && (this.player.body.onFloor() || this.isClimbing) && game.time.now > this.jumpTimer) {
+        if (keySpace && (this.player.body.onFloor() || this.isClimbing) && game.time.now > this.jumpTimer) {
             this.player.body.velocity.y = -300;
             this.jumpTimer = game.time.now + 750;
             if (this.isClimbing) {
@@ -151,21 +177,20 @@ var createGameState = function () {
             }
         }
 
-
         if (this.isClimbing) {
 
             this.player.ani = 'climb';
 
-            if (this.cursors.up.isDown || game.touchControl.cursors.up || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_UP) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1) {
+            if (keyUp) {
                 this.player.body.velocity.x = 0;
                 this.player.body.velocity.y = -50;
-            } else if (this.cursors.down.isDown || game.touchControl.cursors.down || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_DOWN) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) > 0.1) {
+            } else if (keyDown) {
                 this.player.body.velocity.x = 0;
                 this.player.body.velocity.y = 50;
-            } else if (this.cursors.left.isDown || game.touchControl.cursors.left || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1) {
+            } else if (keyLeft) {
                 this.player.body.velocity.x = -50;
                 this.player.body.velocity.y = 0;
-            } else if (this.cursors.right.isDown || game.touchControl.cursors.right || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1) {
+            } else if (keyRight) {
                 this.player.body.velocity.x = 50;
                 this.player.body.velocity.y = 0;
             } else {
@@ -178,7 +203,7 @@ var createGameState = function () {
             // not climbing
             this.player.body.velocity.x = 0;
 
-            if (this.cursors.left.isDown || game.touchControl.cursors.left || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1) {
+            if (keyLeft) {
                 this.player.body.velocity.x = -125;
 
                 this.facing = 'left';
@@ -188,7 +213,7 @@ var createGameState = function () {
                     this.player.ani = 'jump-left';
                 }
 
-            } else if (this.cursors.right.isDown || game.touchControl.cursors.right || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT) || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1) {
+            } else if (keyRight) {
                 this.player.body.velocity.x = 125;
 
                 this.facing = 'right';
@@ -228,6 +253,7 @@ var createGameState = function () {
         }
 
         this.otherPlayers.forEach(this.animateOtherPlayer);
+
     };
 
     that.animateOtherPlayer = function (otherPlayer, index) {
