@@ -24,6 +24,7 @@ var createGameState = function () {
 
     // private, can't set values change
     that.facing = 'left';
+    that.idle = false;
     that.jumpTimer = 0;
     that.canClimb = false;
     that.isClimbing = false;
@@ -99,13 +100,15 @@ var createGameState = function () {
         simplePlayer.animations.add('run-left', [6, 7, 8], 12, true);
         simplePlayer.animations.add('idle-left', [5], 12, true);
         simplePlayer.animations.add('jump-left', [9], 12, true);
-        simplePlayer.animations.add('slide-left', [9], 12, true); // TODO: needs it's own frame
-        simplePlayer.animations.add('flail-left', [9], 12, true); // TODO: needs it's own frame
+        simplePlayer.animations.add('slide-left', [14], 12, true);
+        //simplePlayer.animations.add('flail-left', [17], 12, true);
+        simplePlayer.animations.add('flail-left', [9], 12, true);
         simplePlayer.animations.add('run-right', [1, 2, 3], 12, true);
         simplePlayer.animations.add('idle-right', [0], 12, true);
         simplePlayer.animations.add('jump-right', [4], 12, true);
-        simplePlayer.animations.add('slide-right', [4], 12, true); // TODO: needs it's own frame
-        simplePlayer.animations.add('flail-right', [4], 12, true); // TODO: needs it's own frame
+        simplePlayer.animations.add('slide-right', [15], 12, true);
+        //simplePlayer.animations.add('flail-right', [16], 12, true);
+        simplePlayer.animations.add('flail-right', [4], 12, true);
         simplePlayer.animations.add('climb', [10, 11, 12, 13], 12, true);
         simplePlayer.animations.add('climb-idle', [10], 12, true);
 
@@ -219,11 +222,7 @@ var createGameState = function () {
                 this.player.body.velocity.x = this.playerSpeed;
 
                 this.facing = 'left';
-                if (this.player.body.onFloor()) {
-                    this.player.ani = 'run-left';
-                } else {
-                    this.player.ani = 'jump-left';
-                }
+                this.idle = false;
 
             } else if (keyRight) {
 
@@ -232,30 +231,15 @@ var createGameState = function () {
                 this.player.body.velocity.x = this.playerSpeed;
 
                 this.facing = 'right';
-                if (this.player.body.onFloor()) {
-                    this.player.ani = 'run-right';
-                } else {
-                    this.player.ani = 'jump-right';
-                }
+                this.idle = false;
 
             } else {
 
                 this.playerSpeed += (0 - this.playerSpeed) / 2;
                 this.player.body.velocity.x = this.playerSpeed;
 
-                if (this.player.body.onFloor()) {
-                    if (this.facing == 'left') {
-                        this.player.ani = 'idle-left';
-                    } else {
-                        this.player.ani = 'idle-right';
-                    }
-                } else {
-                    if (this.facing == 'left') {
-                        this.player.ani = 'jump-left';
-                    } else {
-                        this.player.ani = 'jump-right';
-                    }
-                }
+                this.idle = true;
+
             }
 
             if (keySpace && (this.player.body.onFloor() || this.player.body.onWall()) && game.time.now > this.jumpTimer) {
@@ -266,6 +250,55 @@ var createGameState = function () {
                     this.playerSpeed = this.playerSpeedMax;
                 } else if (this.player.body.blocked.right) {
                     this.playerSpeed = - this.playerSpeedMax;
+                }
+            }
+
+            if (this.player.body.onFloor()) {
+
+                if (this.idle) {
+
+                    if (this.facing === 'left') {
+                        this.player.ani = 'idle-left';
+                    } else {
+                        this.player.ani = 'idle-right';
+                    }
+
+                } else {
+
+                    if (this.facing === 'left') {
+                        this.player.ani = 'run-left';
+                    } else {
+                        this.player.ani = 'run-right';
+                    }
+
+                }
+
+            } else {
+
+                if (this.player.body.blocked.left) {
+
+                    this.player.ani = 'slide-left';
+
+                } else if (this.player.body.blocked.right) {
+
+                    this.player.ani = 'slide-right';
+
+                } else if (this.player.body.velocity.y < 0) {
+
+                    if (this.facing === 'left') {
+                        this.player.ani = 'jump-left';
+                    } else {
+                        this.player.ani = 'jump-right';
+                    }
+
+                } else {
+
+                    if (this.facing === 'left') {
+                        this.player.ani = 'flail-left';
+                    } else {
+                        this.player.ani = 'flail-right';
+                    }
+
                 }
             }
 
