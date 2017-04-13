@@ -195,6 +195,34 @@ clearTimeout(this._timeOutID),this.onTimeout.dispatch(this)},getUserMediaError:f
 
 }(window, Phaser));
 
+var createOtherPlayer = function (playerdata) {
+
+    var otherPlayer = createSimplePlayer(playerdata);
+
+    otherPlayer.receive = function (playerdata) {
+
+        otherPlayer.xHome = playerdata.x;
+        otherPlayer.yHome = playerdata.y;
+        otherPlayer.ani = playerdata.ani;
+
+    };
+
+    otherPlayer.receive(playerdata);
+
+    otherPlayer.update = function () {
+
+        otherPlayer.x += (otherPlayer.xHome - otherPlayer.x) / 2;
+        otherPlayer.y += (otherPlayer.yHome - otherPlayer.y) / 2;
+        otherPlayer.animations.play(otherPlayer.ani);
+
+    };
+
+    //console.log(otherPlayer);
+
+    return otherPlayer;
+
+};
+
 var createSimplePlayer = function (playerdata) {
 
     var simplePlayer = game.add.sprite(playerdata.x, playerdata.y, 'tilda');
@@ -324,14 +352,9 @@ var createGameState = function () {
         socket.on('updateplayer', function (playerdata) {
             //console.log('updateplayer');
             if (that.otherPlayers[playerdata.id]) {
-                that.otherPlayers[playerdata.id].xHome = playerdata.x;
-                that.otherPlayers[playerdata.id].yHome = playerdata.y;
-                that.otherPlayers[playerdata.id].ani = playerdata.ani;
+                that.otherPlayers[playerdata.id].receive(playerdata);
             } else {
-                that.otherPlayers[playerdata.id] = createSimplePlayer(playerdata);
-                that.otherPlayers[playerdata.id].xHome = that.otherPlayers[playerdata.id].x;
-                that.otherPlayers[playerdata.id].yHome = that.otherPlayers[playerdata.id].y;
-                that.otherPlayers[playerdata.id].ani = playerdata.ani;
+                that.otherPlayers[playerdata.id] = createOtherPlayer(playerdata);
                 that.forceUpdate = true;
             }
         });
@@ -542,18 +565,6 @@ var createGameState = function () {
             this.lastUpdate.ani = this.player.ani;
             socket.emit('updateplayer', this.lastUpdate);
             this.forceUpdate = false;
-        }
-
-        this.otherPlayers.forEach(this.animateOtherPlayer);
-
-    };
-
-    that.animateOtherPlayer = function (otherPlayer, index) {
-
-        if (otherPlayer !== undefined) {
-            otherPlayer.x += (otherPlayer.xHome - otherPlayer.x) / 2;
-            otherPlayer.y += (otherPlayer.yHome - otherPlayer.y) / 2;
-            otherPlayer.animations.play(otherPlayer.ani);
         }
 
     };
