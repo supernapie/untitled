@@ -49,7 +49,7 @@ var createGameState = function () {
         //this.layer.debug = true;
         this.layer.resizeWorld();
 
-        this.player = createSimplePlayer({x: this.startPoint.x, y: this.startPoint.y});
+        this.player = createSteerablePlayer({x: this.startPoint.x, y: this.startPoint.y});
 
         game.physics.enable(this.player, Phaser.Physics.ARCADE);
         //this.player.body.bounce.y = 0.2;
