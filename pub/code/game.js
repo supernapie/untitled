@@ -375,12 +375,6 @@ var createGameState = function () {
 
         this.player = createSteerablePlayer({x: this.startPoint.x, y: this.startPoint.y});
 
-        game.physics.enable(this.player, Phaser.Physics.ARCADE);
-        //this.player.body.bounce.y = 0.2;
-        //this.player.body.allowGravity = false;
-        this.player.body.collideWorldBounds = true;
-        this.player.body.setSize(8, 16, 12, 16);
-
         game.camera.follow(this.player);
 
         this.cursors = game.input.keyboard.createCursorKeys();
