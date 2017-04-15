@@ -259,7 +259,7 @@ var createSteerablePlayer = function (playerdata) {
     var canClimb = false;
     var isClimbing = false;
     var climbTimer = 0;
-    var playerSpeed = 0;
+    var speed = 0;
 
     var steerablePlayer = createSimplePlayer(playerdata);
 
@@ -271,21 +271,171 @@ var createSteerablePlayer = function (playerdata) {
 
     steerablePlayer.speedMax = 125;
     steerablePlayer.speedChange = 10;
-
-    var keys = {up: false, down: false, left: false, right: false, space: false};
-
-    steerablePlayer.receive = function (keys) {
-
-        keys = keys;
-
-    };
+    steerablePlayer.layer = undefined;
+    steerablePlayer.keys = {up: false, down: false, left: false, right: false, space: false};
 
     steerablePlayer.update = function () {
 
+        if (this.layer == undefined) {
+            return;
+        }
+
+        canClimb = false;
+        var climbTiles = this.layer.getTiles(this.body.x, this.body.y, this.body.width, this.body.height, false, false);
+        for (var c = 0; c < climbTiles.length; c++) {
+            if (climbTiles[c].index > 192) {
+                canClimb = true;
+            }
+        }
+
+        if (isClimbing && !canClimb) {
+            isClimbing = false;
+            this.body.allowGravity = true;
+        }
+
+        if (this.keys.up && game.time.now > climbTimer) {
+            //console.log('x:' + this.body.x + ' y:' + this.body.y + 'w:' + this.body.width + ' h:' + this.body.height);
+            //console.log(canClimb);
+            if (canClimb && !isClimbing) {
+                isClimbing = true;
+                this.body.allowGravity = false;
+                climbTimer = game.time.now + 250;
+            }
+        }
+
+        game.physics.arcade.collide(this, this.layer);
+
+        if (isClimbing) {
+
+            this.ani = 'climb';
+
+            if (this.keys.up) {
+                this.body.velocity.x = 0;
+                this.body.velocity.y = -50;
+            } else if (this.keys.down) {
+                this.body.velocity.x = 0;
+                this.body.velocity.y = 50;
+            } else if (this.keys.left) {
+                this.body.velocity.x = -50;
+                this.body.velocity.y = 0;
+            } else if (this.keys.right) {
+                this.body.velocity.x = 50;
+                this.body.velocity.y = 0;
+            } else {
+                this.ani = 'climb-idle';
+                this.body.velocity.x = 0;
+                this.body.velocity.y = 0;
+            }
+
+            if (this.keys.space && game.time.now > jumpTimer) {
+                this.body.velocity.y = -250;
+                jumpTimer = game.time.now + 250;
+                climbTimer = game.time.now + 250;
+                isClimbing = false;
+                this.body.allowGravity = true;
+            }
+
+        } else {
+
+            // not climbing
+
+            this.body.velocity.x = 0;
+
+            if (this.keys.left) {
+
+                speed -= this.speedChange;
+                speed = Math.max(speed, -this.speedMax);
+                this.body.velocity.x = speed;
+
+                facing = 'left';
+                idle = false;
+
+            } else if (this.keys.right) {
+
+                speed += this.speedChange;
+                speed = Math.min(speed, this.speedMax);
+                this.body.velocity.x = speed;
+
+                facing = 'right';
+                idle = false;
+
+            } else {
+
+                speed += (0 - speed) / 2;
+                this.body.velocity.x = speed;
+
+                idle = true;
+
+            }
+
+            if (this.keys.space && (this.body.onFloor() || this.body.onWall()) && game.time.now > jumpTimer) {
+                this.body.velocity.y = -250;
+                jumpTimer = game.time.now + 250;
+
+                if (this.body.blocked.left) {
+                    speed = this.speedMax;
+                } else if (this.body.blocked.right) {
+                    speed = -this.speedMax;
+                }
+            }
+
+            if (this.body.onFloor()) {
+
+                if (idle) {
+
+                    if (facing === 'left') {
+                        this.ani = 'idle-left';
+                    } else {
+                        this.ani = 'idle-right';
+                    }
+
+                } else {
+
+                    if (facing === 'left') {
+                        this.ani = 'run-left';
+                    } else {
+                        this.ani = 'run-right';
+                    }
+
+                }
+
+            } else {
+
+                if (this.body.blocked.left) {
+
+                    this.ani = 'slide-left';
+
+                } else if (this.body.blocked.right) {
+
+                    this.ani = 'slide-right';
+
+                } else if (this.body.velocity.y < 0) {
+
+                    if (facing === 'left') {
+                        this.ani = 'jump-left';
+                    } else {
+                        this.ani = 'jump-right';
+                    }
+
+                } else {
+
+                    if (facing === 'left') {
+                        this.ani = 'flail-left';
+                    } else {
+                        this.ani = 'flail-right';
+                    }
+
+                }
+            }
+
+        } // end climbing or not climbing
+
+        // don't forget to animate :)
+        this.animations.play(this.ani);
 
     };
 
-    //console.log('create');
+    //console.log('update');
     //console.log(steerablePlayer);
 
     return steerablePlayer;
@@ -336,10 +486,6 @@ var createGameState = function () {
     that.lastUpdate = undefined;
     that.forceUpdate = false;
 
-    // tweak movement feel
-    that.playerSpeedMax = 125;
-    that.playerSpeedChange = 10;
-
     // can/must set values in substate
     that.tilemapName = 'levelx';
     that.tilesetImageName = 'tilesx';
@@ -347,13 +493,6 @@ var createGameState = function () {
     that.tileOnlyUp = [161,162,163, 177,178,179, 193,194,195, 209,210,211, 225,226,227, 241,242,243];
 
     // private, can't set values change
-    that.facing = 'left';
-    that.idle = false;
-    that.jumpTimer = 0;
-    that.canClimb = false;
-    that.isClimbing = false;
-    that.climbTimer = 0;
-    that.playerSpeed = 0;
     that.resizeTO = 0;
 
     that.create = function () {
@@ -374,6 +513,7 @@ var createGameState = function () {
         this.layer.resizeWorld();
 
         this.player = createSteerablePlayer({x: this.startPoint.x, y: this.startPoint.y});
+        this.player.layer = this.layer;
 
         game.camera.follow(this.player);
 
@@ -416,184 +556,33 @@ var createGameState = function () {
 
     that.update = function () {
 
-        // normalize player input
+        // pass player input
 
-        var keyUp = this.cursors.up.isDown
+        this.player.keys.up = this.cursors.up.isDown
                 || game.touchControl.cursors.up
                 || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_UP)
                 || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1;
 
-        var keyDown = this.cursors.down.isDown
+        this.player.keys.down = this.cursors.down.isDown
                 || game.touchControl.cursors.down
                 || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_DOWN)
                 || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) > 0.1;
 
-        var keyLeft = this.cursors.left.isDown
+        this.player.keys.left = this.cursors.left.isDown
                 || game.touchControl.cursors.left
                 || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT)
                 || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1;
 
-        var keyRight = this.cursors.right.isDown
+        this.player.keys.right = this.cursors.right.isDown
                 || game.touchControl.cursors.right
                 || pad1.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT)
                 || pad1.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) > 0.1;
 
-        var keySpace = this.jumpButton.isDown
+        this.player.keys.space = this.jumpButton.isDown
                 || game.touchControl.cursors.space
                 || pad1.justPressed(Phaser.Gamepad.XBOX360_A);
 
-        this.canClimb = false;
-        var climbTiles = this.layer.getTiles(this.player.body.x, this.player.body.y, this.player.body.width, this.player.body.height, false, false);
-        for (var c = 0; c < climbTiles.length; c++) {
-            if (climbTiles[c].index > 192) {
-                this.canClimb = true;
-            }
-        }
-
-        if (this.isClimbing && !this.canClimb) {
-            this.isClimbing = false;
-            this.player.body.allowGravity = true;
-        }
-
-        if (keyUp && game.time.now > this.climbTimer) {
-            //console.log('x:' + this.player.body.x + ' y:' + this.player.body.y + 'w:' + this.player.body.width + ' h:' + this.player.body.height);
-            //console.log(this.canClimb);
-            if (this.canClimb && !this.isClimbing) {
-                this.isClimbing = true;
-                this.player.body.allowGravity = false;
-                this.climbTimer = game.time.now + 250;
-            }
-        }
-
-        game.physics.arcade.collide(this.player, this.layer);
-
-        if (this.isClimbing) {
-
-            this.player.ani = 'climb';
-
-            if (keyUp) {
-                this.player.body.velocity.x = 0;
-                this.player.body.velocity.y = -50;
-            } else if (keyDown) {
-                this.player.body.velocity.x = 0;
-                this.player.body.velocity.y = 50;
-            } else if (keyLeft) {
-                this.player.body.velocity.x = -50;
-                this.player.body.velocity.y = 0;
-            } else if (keyRight) {
-                this.player.body.velocity.x = 50;
-                this.player.body.velocity.y = 0;
-            } else {
-                this.player.ani = 'climb-idle';
-                this.player.body.velocity.x = 0;
-                this.player.body.velocity.y = 0;
-            }
-
-            if (keySpace && game.time.now > this.jumpTimer) {
-                this.player.body.velocity.y = -250;
-                this.jumpTimer = game.time.now + 250;
-                this.climbTimer = game.time.now + 250;
-                this.isClimbing = false;
-                this.player.body.allowGravity = true;
-            }
-
-        } else {
-
-            // not climbing
-
-            this.player.body.velocity.x = 0;
-
-            if (keyLeft) {
-
-                this.playerSpeed -= this.playerSpeedChange;
-                this.playerSpeed = Math.max(this.playerSpeed, -this.playerSpeedMax);
-                this.player.body.velocity.x = this.playerSpeed;
-
-                this.facing = 'left';
-                this.idle = false;
-
-            } else if (keyRight) {
-
-                this.playerSpeed += this.playerSpeedChange;
-                this.playerSpeed = Math.min(this.playerSpeed, this.playerSpeedMax);
-                this.player.body.velocity.x = this.playerSpeed;
-
-                this.facing = 'right';
-                this.idle = false;
-
-            } else {
-
-                this.playerSpeed += (0 - this.playerSpeed) / 2;
-                this.player.body.velocity.x = this.playerSpeed;
-
-                this.idle = true;
-
-            }
-
-            if (keySpace && (this.player.body.onFloor() || this.player.body.onWall()) && game.time.now > this.jumpTimer) {
-                this.player.body.velocity.y = -250;
-                this.jumpTimer = game.time.now + 250;
-
-                if (this.player.body.blocked.left) {
-                    this.playerSpeed = this.playerSpeedMax;
-                } else if (this.player.body.blocked.right) {
-                    this.playerSpeed = - this.playerSpeedMax;
-                }
-            }
-
-            if (this.player.body.onFloor()) {
-
-                if (this.idle) {
-
-                    if (this.facing === 'left') {
-                        this.player.ani = 'idle-left';
-                    } else {
-                        this.player.ani = 'idle-right';
-                    }
-
-                } else {
-
-                    if (this.facing === 'left') {
-                        this.player.ani = 'run-left';
-                    } else {
-                        this.player.ani = 'run-right';
-                    }
-
-                }
-
-            } else {
-
-                if (this.player.body.blocked.left) {
-
-                    this.player.ani = 'slide-left';
-
-                } else if (this.player.body.blocked.right) {
-
-                    this.player.ani = 'slide-right';
-
-                } else if (this.player.body.velocity.y < 0) {
-
-                    if (this.facing === 'left') {
-                        this.player.ani = 'jump-left';
-                    } else {
-                        this.player.ani = 'jump-right';
-                    }
-
-                } else {
-
-                    if (this.facing === 'left') {
-                        this.player.ani = 'flail-left';
-                    } else {
-                        this.player.ani = 'flail-right';
-                    }
-
-                }
-            }
-
-        } // end climbing or not climbing
-
-        // don't forget to animate :)
-        this.player.animations.play(this.player.ani);
+        // send update to socket.io
 
         if (this.forceUpdate || this.player.x !== this.lastUpdate.x || this.player.y !== this.lastUpdate.y || this.player.ani !== this.lastUpdate.ani) {
             this.lastUpdate.x = this.player.x;
