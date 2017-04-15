@@ -580,7 +580,7 @@ var createGameState = function () {
 
         this.player.keys.space = this.jumpButton.isDown
                 || game.touchControl.cursors.space
-                || pad1.justPressed(Phaser.Gamepad.XBOX360_A);
+                || pad1.isDown(Phaser.Gamepad.XBOX360_A);
 
         // send update to socket.io
 
