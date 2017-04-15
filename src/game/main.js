@@ -25,6 +25,10 @@ var socket = io();
 
 window.onload = function() {
 
+    //var isInIframe = (parent !== window);
+    //console.log(isInIframe);
+    //console.log(document.referrer);
+
     game = new Phaser.Game("100%", "100%", Phaser.CANVAS, '');
 
     game.state.add('boot', bootState);
