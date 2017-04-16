@@ -33,6 +33,9 @@ io.on('connection', function(socket){
         socket.broadcast.emit('removeplayer', player);
     });
 
+    var clientIp = socket.request.connection.remoteAddress;
+    console.log(clientIp);
+
 });
 
 http.listen(3000, function(){
