@@ -2,6 +2,9 @@ var game;
 var gameData;
 
 var pad1;
+var gameIndex = 1;
+var myIp = '';
+var myId = 0;
 
 var fontName = 'sans-serif';
 var googleFontName = 'Varela Round';

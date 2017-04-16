@@ -17,8 +17,12 @@ io.on('connection', function(socket){
     console.log('a player connected');
 
     var id = players.length;
-    var player = {id: id, x: 0, y: 0, ani: 'idle-left'};
+    var player = {id: id, x: 0, y: 0, ani: 'idle-left', ip: socket.request.connection.remoteAddress};
     players.push(player);
+
+    socket.on('whoami', function(data) {
+        socket.emit('me', player);
+    });
 
     socket.on('updateplayer', function(playerdata) {
         //console.log('playerdata');
@@ -32,9 +36,6 @@ io.on('connection', function(socket){
         console.log('player disconnected');
         socket.broadcast.emit('removeplayer', player);
     });
-
-    var clientIp = socket.request.connection.remoteAddress;
-    console.log(clientIp);
 
 });
 

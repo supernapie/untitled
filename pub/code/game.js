@@ -525,12 +525,26 @@ var createGameState = function () {
 
         this.otherPlayers = [];
 
+        // get my own data from socket io
+        socket.on('me', function (data) {
+            myId = data.id;
+            myIp = data.ip;
+        });
+        socket.emit('whoami', true);
+
         socket.on('updateplayer', function (playerdata) {
             //console.log('updateplayer');
             if (that.otherPlayers[playerdata.id]) {
                 that.otherPlayers[playerdata.id].receive(playerdata);
             } else {
                 that.otherPlayers[playerdata.id] = createOtherPlayer(playerdata);
+                if (playerdata.ip == myIp && playerdata.id < myId) {
+                    gameIndex++;
+                    //console.log(game.input.gamepad);
+                    if (game.input.gamepad.pad2.connected) {
+                        pad1 = game.input.gamepad.pad2;
+                    }
+                }
                 that.forceUpdate = true;
             }
         });
@@ -902,6 +916,9 @@ var game;
 var gameData;
 
 var pad1;
+var gameIndex = 1;
+var myIp = '';
+var myId = 0;
 
 var fontName = 'sans-serif';
 var googleFontName = 'Varela Round';
