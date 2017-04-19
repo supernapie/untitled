@@ -17,10 +17,17 @@ io.on('connection', function(socket){
     console.log('a player connected');
 
     var id = players.length;
-    var player = {id: id, x: 0, y: 0, ani: 'idle-left', ip: socket.request.connection.remoteAddress};
+    var player = {id: id, x: 0, y: 0, ani: 'idle-left', key: 'tilda', ip: socket.request.connection.remoteAddress};
     players.push(player);
 
     socket.on('whoami', function(data) {
+        // if there isn't a bunny already the player can be it
+        player.key = 'tilda-bunny';
+        players.forEach(function (otherPlayer) {
+            if (otherPlayer !== undefined && otherPlayer.id !== id && otherPlayer.key.indexOf('bunny') > -1) {
+                player.key = 'tilda';
+            }
+        });
         socket.emit('me', player);
     });
 
@@ -29,12 +36,23 @@ io.on('connection', function(socket){
         player.x = (playerdata.x) ? playerdata.x : 0;
         player.y = (playerdata.y) ? playerdata.y : 0;
         player.ani = (playerdata.ani) ? playerdata.ani : 'idle-left';
+        player.key = (playerdata.key) ? playerdata.key : 'tilda';
         socket.broadcast.emit('updateplayer', player);
+    });
+
+    socket.on('newbunny', function(playerdata) {
+        //console.log('playerdata');
+        player.x = (playerdata.x) ? playerdata.x : 0;
+        player.y = (playerdata.y) ? playerdata.y : 0;
+        player.ani = (playerdata.ani) ? playerdata.ani : 'idle-left';
+        player.key = (playerdata.key) ? playerdata.key : 'tilda';
+        socket.broadcast.emit('newbunny', player);
     });
 
     socket.on('disconnect', function(){
         console.log('player disconnected');
         socket.broadcast.emit('removeplayer', player);
+        players[id] = undefined;
     });
 
 });

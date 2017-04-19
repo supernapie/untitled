@@ -9,6 +9,8 @@ var createSteerablePlayer = function (playerdata) {
     var climbTimer = 0;
     var speed = 0;
 
+    var bunnyTimer = 0;
+
     var steerablePlayer = createSimplePlayer(playerdata);
 
     game.physics.enable(steerablePlayer, Phaser.Physics.ARCADE);
@@ -21,6 +23,21 @@ var createSteerablePlayer = function (playerdata) {
     steerablePlayer.speedChange = 10;
     steerablePlayer.layer = undefined;
     steerablePlayer.keys = {up: false, down: false, left: false, right: false, space: false};
+
+    steerablePlayer.tagAsBunny = function () {
+        if (steerablePlayer.key.indexOf('bunny') <= -1 && bunnyTimer < game.time.now) {
+            steerablePlayer.loadTexture(steerablePlayer.key + '-bunny', steerablePlayer.frame, false);
+            return true;
+        }
+        return false;
+    };
+
+    steerablePlayer.untagAsBunny = function () {
+        if (steerablePlayer.key.indexOf('bunny') > -1) {
+            steerablePlayer.loadTexture(steerablePlayer.key.replace('-bunny',''), steerablePlayer.frame, false);
+            bunnyTimer = game.time.now + 10000;
+        }
+    };
 
     steerablePlayer.update = function () {
 

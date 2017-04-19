@@ -55,6 +55,9 @@ var createGameState = function () {
         socket.on('me', function (data) {
             myId = data.id;
             myIp = data.ip;
+            if (that.player.key !== data.key) {
+                that.player.loadTexture(data.key, that.player.frame, false);
+            }
         });
         socket.emit('whoami', true);
 
@@ -82,7 +85,11 @@ var createGameState = function () {
             }
         });
 
-        this.lastUpdate = {x: 0, y: 0, ani: 'idle-left'};
+        socket.on('newbunny', function (playerdata) {
+            that.player.untagAsBunny();
+        });
+
+        this.lastUpdate = {x: 0, y: 0, ani: 'idle-left', key: 'tilda'};
 
     };
 
@@ -124,14 +131,26 @@ var createGameState = function () {
 
         // send update to socket.io
 
-        if (this.forceUpdate || this.player.x !== this.lastUpdate.x || this.player.y !== this.lastUpdate.y || this.player.ani !== this.lastUpdate.ani) {
+        if (this.forceUpdate || this.player.x !== this.lastUpdate.x || this.player.y !== this.lastUpdate.y || this.player.ani !== this.lastUpdate.ani || this.player.key !== this.lastUpdate.key) {
             this.lastUpdate.x = this.player.x;
             this.lastUpdate.y = this.player.y;
             this.lastUpdate.ani = this.player.ani;
+            this.lastUpdate.key = this.player.key;
             socket.emit('updateplayer', this.lastUpdate);
             this.forceUpdate = false;
         }
 
+        game.physics.arcade.overlap(this.player, this.otherPlayers, this.playersOverlapped, null, this);
+
+    };
+
+    that.playersOverlapped = function (player, otherPlayer) {
+
+        if (otherPlayer.key.indexOf('bunny') > -1) {
+            if (player.tagAsBunny()) {
+                socket.emit('newbunny', this.lastUpdate);
+            }
+        }
     };
 
     that.resize = function () {

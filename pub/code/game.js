@@ -199,11 +199,20 @@ var createOtherPlayer = function (playerdata) {
 
     var otherPlayer = createSimplePlayer(playerdata);
 
+    game.physics.enable(otherPlayer, Phaser.Physics.ARCADE);
+    //otherPlayer.body.bounce.y = 0.2;
+    otherPlayer.body.allowGravity = false;
+    otherPlayer.body.collideWorldBounds = true;
+    otherPlayer.body.setSize(8, 16, 12, 16);
+
     otherPlayer.receive = function (playerdata) {
 
         otherPlayer.xHome = playerdata.x;
         otherPlayer.yHome = playerdata.y;
         otherPlayer.ani = playerdata.ani;
+        if (otherPlayer.key !== playerdata.key) {
+            otherPlayer.loadTexture(playerdata.key, otherPlayer.frame, false);
+        }
 
     };
 
@@ -261,6 +270,8 @@ var createSteerablePlayer = function (playerdata) {
     var climbTimer = 0;
     var speed = 0;
 
+    var bunnyTimer = 0;
+
     var steerablePlayer = createSimplePlayer(playerdata);
 
     game.physics.enable(steerablePlayer, Phaser.Physics.ARCADE);
@@ -273,6 +284,21 @@ var createSteerablePlayer = function (playerdata) {
     steerablePlayer.speedChange = 10;
     steerablePlayer.layer = undefined;
     steerablePlayer.keys = {up: false, down: false, left: false, right: false, space: false};
+
+    steerablePlayer.tagAsBunny = function () {
+        if (steerablePlayer.key.indexOf('bunny') <= -1 && bunnyTimer < game.time.now) {
+            steerablePlayer.loadTexture(steerablePlayer.key + '-bunny', steerablePlayer.frame, false);
+            return true;
+        }
+        return false;
+    };
+
+    steerablePlayer.untagAsBunny = function () {
+        if (steerablePlayer.key.indexOf('bunny') > -1) {
+            steerablePlayer.loadTexture(steerablePlayer.key.replace('-bunny',''), steerablePlayer.frame, false);
+            bunnyTimer = game.time.now + 10000;
+        }
+    };
 
     steerablePlayer.update = function () {
 
@@ -529,6 +555,9 @@ var createGameState = function () {
         socket.on('me', function (data) {
             myId = data.id;
             myIp = data.ip;
+            if (that.player.key !== data.key) {
+                that.player.loadTexture(data.key, that.player.frame, false);
+            }
         });
         socket.emit('whoami', true);
 
@@ -556,7 +585,11 @@ var createGameState = function () {
             }
         });
 
-        this.lastUpdate = {x: 0, y: 0, ani: 'idle-left'};
+        socket.on('newbunny', function (playerdata) {
+            that.player.untagAsBunny();
+        });
+
+        this.lastUpdate = {x: 0, y: 0, ani: 'idle-left', key: 'tilda'};
 
     };
 
@@ -598,14 +631,26 @@ var createGameState = function () {
 
         // send update to socket.io
 
-        if (this.forceUpdate || this.player.x !== this.lastUpdate.x || this.player.y !== this.lastUpdate.y || this.player.ani !== this.lastUpdate.ani) {
+        if (this.forceUpdate || this.player.x !== this.lastUpdate.x || this.player.y !== this.lastUpdate.y || this.player.ani !== this.lastUpdate.ani || this.player.key !== this.lastUpdate.key) {
             this.lastUpdate.x = this.player.x;
             this.lastUpdate.y = this.player.y;
             this.lastUpdate.ani = this.player.ani;
+            this.lastUpdate.key = this.player.key;
             socket.emit('updateplayer', this.lastUpdate);
             this.forceUpdate = false;
         }
 
+        game.physics.arcade.overlap(this.player, this.otherPlayers, this.playersOverlapped, null, this);
+
+    };
+
+    that.playersOverlapped = function (player, otherPlayer) {
+
+        if (otherPlayer.key.indexOf('bunny') > -1) {
+            if (player.tagAsBunny()) {
+                socket.emit('newbunny', this.lastUpdate);
+            }
+        }
     };
 
     that.resize = function () {
@@ -664,6 +709,7 @@ var createLoadState =  function () {
         game.load.tilemap('sandbox', 'assets/tilemaps/data/sandbox.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('groundTiles', 'assets/tilemaps/tiles/groundTiles.png');
         game.load.spritesheet('tilda', 'assets/sprites/tilda.png', 32, 32);
+        game.load.spritesheet('tilda-bunny', 'assets/sprites/tilda-bunny.png', 32, 32);
 
         game.load.image('dpad', 'assets/controls/dpad.png');
         game.load.image('touchsegment', 'assets/controls/touchsegment.png');
