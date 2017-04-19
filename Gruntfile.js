@@ -11,6 +11,7 @@ module.exports = function(grunt) {
             dist: {
                 src: [  "src/lib/**/*.min.js",
                         "src/game/plugins/**/*.js",
+                        "src/game/sprites/**/*.js",
                         "src/game/states/**/*.js",
                         "src/game/substates/**/*.js",
                         "src/game/main.js"
