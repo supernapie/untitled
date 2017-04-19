@@ -587,6 +587,7 @@ var createGameState = function () {
 
         socket.on('newbunny', function (playerdata) {
             that.player.untagAsBunny();
+            game.camera.shake(0.05, 500);
         });
 
         this.lastUpdate = {x: 0, y: 0, ani: 'idle-left', key: 'tilda'};
@@ -649,6 +650,7 @@ var createGameState = function () {
         if (otherPlayer.key.indexOf('bunny') > -1) {
             if (player.tagAsBunny()) {
                 socket.emit('newbunny', this.lastUpdate);
+                game.camera.shake(0.05, 500);
             }
         }
     };
