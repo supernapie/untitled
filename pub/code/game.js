@@ -318,6 +318,7 @@ var createSteerablePlayer = function (playerdata) {
     var idle = false;
     var jumpTimer = 0;
     var canClimb = false;
+    var canClimbDown = false;
     var isClimbing = false;
     var climbTimer = 0;
     var speed = 0;
@@ -325,6 +326,8 @@ var createSteerablePlayer = function (playerdata) {
     var bunnyTimer = 0;
 
     var steerablePlayer = createSimplePlayer(playerdata);
+
+    var climbDownTiles = [193,194,195, 209,210,211, 225,226,227, 241,242,243];
 
     game.physics.enable(steerablePlayer, Phaser.Physics.ARCADE);
     //steerablePlayer.body.bounce.y = 0.2;
@@ -359,25 +362,39 @@ var createSteerablePlayer = function (playerdata) {
         }
 
         canClimb = false;
-        var climbTiles = this.layer.getTiles(this.body.x, this.body.y, this.body.width, this.body.height, false, false);
+        canClimbDown = false;
+        var climbTiles = this.layer.getTiles(this.body.x, this.body.y, this.body.width, this.body.height + 4, false, false);
         for (var c = 0; c < climbTiles.length; c++) {
             if (climbTiles[c].index > 192) {
                 canClimb = true;
+
+                // you can only climb down specific tiles
+                if (climbDownTiles.indexOf(climbTiles[c].index) > -1) {
+                    canClimbDown = true;
+                }
             }
         }
 
         if (isClimbing && !canClimb) {
             isClimbing = false;
             this.body.allowGravity = true;
+            this.body.checkCollision.down = true;
         }
 
-        if (this.keys.up && game.time.now > climbTimer) {
+        if (!canClimbDown) {
+            this.body.checkCollision.down = true;
+        }
+
+        if ((this.keys.up || this.keys.down) && game.time.now > climbTimer) {
             //console.log('x:' + this.body.x + ' y:' + this.body.y + 'w:' + this.body.width + ' h:' + this.body.height);
             //console.log(canClimb);
             if (canClimb && !isClimbing) {
                 isClimbing = true;
                 this.body.allowGravity = false;
                 climbTimer = game.time.now + 250;
+                if (canClimbDown) {
+                    this.body.checkCollision.down = false;
+                }
             }
         }
 
@@ -411,6 +428,7 @@ var createSteerablePlayer = function (playerdata) {
                 climbTimer = game.time.now + 250;
                 isClimbing = false;
                 this.body.allowGravity = true;
+                this.body.checkCollision.down = true;
             }
 
         } else {
@@ -677,8 +695,8 @@ var createGameState = function () {
         this.nonPlayers = [];
         this.nonPlayers[0] = createNonPlayer({x: this.startPoint.x, y: this.startPoint.y});
         this.nonPlayers[0].layer = this.layer;
-        
-        game.camera.follow(this.nonPlayers[0]);
+
+        //game.camera.follow(this.nonPlayers[0]);
 
     };
 
