@@ -195,6 +195,58 @@ clearTimeout(this._timeOutID),this.onTimeout.dispatch(this)},getUserMediaError:f
 
 }(window, Phaser));
 
+var createNonPlayer = function (playerdata) {
+
+    var nonPlayer = createSteerablePlayer(playerdata);
+
+    nonPlayer.keys.right = true;
+
+    var tryJumpTimer = 0;
+
+    nonPlayer.navigate = function () {
+
+        game.physics.arcade.collide(this, this.layer);
+
+        if (this.body.blocked.left) {
+
+            if (tryJumpTimer < game.time.now) {
+                this.keys.space = true;
+                tryJumpTimer = game.time.now + 500 + Math.random() * 3000;
+            } else if (tryJumpTimer - 2000 < game.time.now) {
+                this.keys.left = false;
+                this.keys.right = true;
+            }
+
+        } else if (this.body.blocked.right) {
+
+            if (tryJumpTimer < game.time.now) {
+                this.keys.space = true;
+                tryJumpTimer = game.time.now + 500 + Math.random() * 3000;
+            } else if (tryJumpTimer - 2000 < game.time.now) {
+                this.keys.left = true;
+                this.keys.right = false;
+            }
+
+        }
+
+    };
+
+    nonPlayer.update = function () {
+
+        this.navigate();
+        this.steer();
+
+        this.keys.space = false;
+
+    };
+
+    //console.log('update');
+    //console.log(nonPlayer);
+
+    return nonPlayer;
+
+};
+
 var createOtherPlayer = function (playerdata) {
 
     var otherPlayer = createSimplePlayer(playerdata);
@@ -300,7 +352,7 @@ var createSteerablePlayer = function (playerdata) {
         }
     };
 
-    steerablePlayer.update = function () {
+    steerablePlayer.steer = function () {
 
         if (this.layer == undefined) {
             return;
@@ -461,6 +513,10 @@ var createSteerablePlayer = function (playerdata) {
 
     };
 
+    steerablePlayer.update = function () {
+        this.steer();
+    };
+
     //console.log('update');
     //console.log(steerablePlayer);
 
@@ -511,6 +567,8 @@ var createGameState = function () {
     that.otherPlayers = undefined;
     that.lastUpdate = undefined;
     that.forceUpdate = false;
+
+    that.nonPlayers = undefined;
 
     // can/must set values in substate
     that.tilemapName = 'levelx';
@@ -592,6 +650,12 @@ var createGameState = function () {
 
         this.lastUpdate = {x: 0, y: 0, ani: 'idle-left', key: 'tilda'};
 
+        this.nonPlayers = [];
+        this.nonPlayers[0] = createNonPlayer({x: this.startPoint.x, y: this.startPoint.y});
+        this.nonPlayers[0].layer = this.layer;
+        
+        game.camera.follow(this.nonPlayers[0]);
+
     };
 
     that.setCollisionOnlyUp = function (tile) {
@@ -671,6 +735,9 @@ var createGameState = function () {
         this.player = undefined;
         this.cursors = undefined;
         this.jumpButton = undefined;
+
+        this.otherPlayers = undefined;
+        this.nonPlayers = undefined;
 
     };
 

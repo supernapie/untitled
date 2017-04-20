@@ -39,7 +39,7 @@ var createSteerablePlayer = function (playerdata) {
         }
     };
 
-    steerablePlayer.update = function () {
+    steerablePlayer.steer = function () {
 
         if (this.layer == undefined) {
             return;
@@ -198,6 +198,10 @@ var createSteerablePlayer = function (playerdata) {
         // don't forget to animate :)
         this.animations.play(this.ani);
 
+    };
+
+    steerablePlayer.update = function () {
+        this.steer();
     };
 
     //console.log('update');

@@ -12,6 +12,8 @@ var createGameState = function () {
     that.lastUpdate = undefined;
     that.forceUpdate = false;
 
+    that.nonPlayers = undefined;
+
     // can/must set values in substate
     that.tilemapName = 'levelx';
     that.tilesetImageName = 'tilesx';
@@ -92,6 +94,12 @@ var createGameState = function () {
 
         this.lastUpdate = {x: 0, y: 0, ani: 'idle-left', key: 'tilda'};
 
+        this.nonPlayers = [];
+        this.nonPlayers[0] = createNonPlayer({x: this.startPoint.x, y: this.startPoint.y});
+        this.nonPlayers[0].layer = this.layer;
+        
+        game.camera.follow(this.nonPlayers[0]);
+
     };
 
     that.setCollisionOnlyUp = function (tile) {
@@ -171,6 +179,9 @@ var createGameState = function () {
         this.player = undefined;
         this.cursors = undefined;
         this.jumpButton = undefined;
+
+        this.otherPlayers = undefined;
+        this.nonPlayers = undefined;
 
     };
 
