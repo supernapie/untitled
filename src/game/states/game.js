@@ -49,6 +49,7 @@ var createGameState = function () {
         this.jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         game.touchControl = this.game.plugins.add(Phaser.Plugin.TouchControl);
+        game.touchControl.settings.singleDirection = true;
         game.touchControl.inputEnable();
 
         this.otherPlayers = [];
