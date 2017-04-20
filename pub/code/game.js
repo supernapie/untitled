@@ -203,7 +203,7 @@ var createNonPlayer = function (playerdata) {
 
     var tryJumpTimer = 0;
 
-    nonPlayer.navigate = function () {
+    nonPlayer.runInChaos = function () {
 
         game.physics.arcade.collide(this, this.layer);
 
@@ -232,6 +232,12 @@ var createNonPlayer = function (playerdata) {
         } else if (tryJumpTimer - 1000 < game.time.now) {
             this.keys.space = false;
         }
+
+    };
+
+    nonPlayer.navigate = function () {
+
+        this.runInChaos();
 
     };
 
