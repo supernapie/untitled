@@ -4,6 +4,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 app.use('/code',express.static(__dirname + '/pub/code'));
+app.use('/img',express.static(__dirname + '/pub/img'));
 app.use('/assets',express.static(__dirname + '/pub/assets'));
 
 app.get('/', function(req, res){

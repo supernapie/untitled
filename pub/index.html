@@ -12,10 +12,35 @@
                 padding: 0px;
                 margin: 0px;
             }
+            #fs-button {
+                display: block;
+                width: 32px;
+                height: 32px;
+                box-sizing: border-box;
+                padding: 2px;
+                background: rgba(255,255,255, .5);
+                border: 2px #989898 solid;
+                border-radius: 3px;
+                position: absolute;
+                bottom: 16px;
+                right: 16px;
+                opacity: .85;
+                display: none;
+            }
+            #fs-button:hover {
+                opacity: 1;
+            }
+            #fs-button img {
+                display: block;
+                width: 24px;
+                height: 24px;
+                margin: 0;
+            }
         </style>
     </head>
     <body>
         <script src="/socket.io/socket.io.js"></script>
         <script type="text/javascript" src="code/game.min.js"></script>
+        <a href="javascript:void(0)" id="fs-button"><img src="img/cross.svg" /></a>
     </body>
 </html>

@@ -29,21 +29,6 @@ var createMenuState = function () {
             game.input.onDown.add(this.startFullScreen, this);
         }
 
-        window.addEventListener('keyup', that.fsKey);
-
-    };
-
-    that.fsKey = function (e) {
-        if (game.canvas.RequestFullScreen) {
-            game.canvas.RequestFullScreen();
-        } else if (game.canvas.webkitRequestFullScreen) {
-            game.canvas.webkitRequestFullScreen();
-        } else if (game.canvas.mozRequestFullScreen) {
-            game.canvas.mozRequestFullScreen();
-        } else if (game.canvas.msRequestFullscreen) {
-            game.canvas.msRequestFullscreen();
-        }
-        window.removeEventListener('keyup', that.fsKey);
     };
 
     that.update = function () {
