@@ -211,22 +211,26 @@ var createNonPlayer = function (playerdata) {
 
             if (tryJumpTimer < game.time.now) {
                 this.keys.space = true;
-                tryJumpTimer = game.time.now + 500 + Math.random() * 3000;
+                tryJumpTimer = game.time.now + 2250 + Math.random() * 1750;
             } else if (tryJumpTimer - 2000 < game.time.now) {
                 this.keys.left = false;
                 this.keys.right = true;
+                this.keys.space = false;
             }
 
         } else if (this.body.blocked.right) {
 
             if (tryJumpTimer < game.time.now) {
                 this.keys.space = true;
-                tryJumpTimer = game.time.now + 500 + Math.random() * 3000;
+                tryJumpTimer = game.time.now + 2250 + Math.random() * 1750;
             } else if (tryJumpTimer - 2000 < game.time.now) {
                 this.keys.left = true;
                 this.keys.right = false;
+                this.keys.space = false;
             }
 
+        } else if (tryJumpTimer - 1000 < game.time.now) {
+            this.keys.space = false;
         }
 
     };
@@ -235,8 +239,6 @@ var createNonPlayer = function (playerdata) {
 
         this.navigate();
         this.steer();
-
-        this.keys.space = false;
 
     };
 
@@ -697,7 +699,7 @@ var createGameState = function () {
         this.nonPlayers[0] = createNonPlayer({x: this.startPoint.x, y: this.startPoint.y});
         this.nonPlayers[0].layer = this.layer;
 
-        //game.camera.follow(this.nonPlayers[0]);
+        game.camera.follow(this.nonPlayers[0]);
 
     };
 
