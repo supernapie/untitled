@@ -203,6 +203,33 @@ var createNonPlayer = function (playerdata) {
 
     var tryJumpTimer = 0;
 
+    nonPlayer.target = undefined; // another sprite
+    nonPlayer.behavior = 'follow'; // can be follow, flee or something else in which case it's chaos
+
+    nonPlayer.follow = function () {
+
+        if (!this.target) {
+            this.behavior = 'chaos';
+            this.runInChaos();
+            return;
+        }
+
+        if (this.target.x > this.x) {
+            this.keys.right = true;
+            this.keys.left = false;
+        } else {
+            this.keys.right = false;
+            this.keys.left = true;
+        }
+
+        this.runInChaos();
+
+        if (this.target.y < this.y) {
+            this.keys.space = true;
+        }
+
+    };
+
     nonPlayer.runInChaos = function () {
 
         game.physics.arcade.collide(this, this.layer);
@@ -237,7 +264,13 @@ var createNonPlayer = function (playerdata) {
 
     nonPlayer.navigate = function () {
 
-        this.runInChaos();
+        switch (this.behavior) {
+            case 'follow':
+                this.follow();
+                break;
+            default:
+                this.runInChaos();
+        }
 
     };
 
@@ -704,6 +737,7 @@ var createGameState = function () {
         this.nonPlayers = [];
         this.nonPlayers[0] = createNonPlayer({x: this.startPoint.x, y: this.startPoint.y});
         this.nonPlayers[0].layer = this.layer;
+        this.nonPlayers[0].target = this.player;
 
         //game.camera.follow(this.nonPlayers[0]);
 

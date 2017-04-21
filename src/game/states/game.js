@@ -98,6 +98,7 @@ var createGameState = function () {
         this.nonPlayers = [];
         this.nonPlayers[0] = createNonPlayer({x: this.startPoint.x, y: this.startPoint.y});
         this.nonPlayers[0].layer = this.layer;
+        this.nonPlayers[0].target = this.player;
 
         //game.camera.follow(this.nonPlayers[0]);
 
