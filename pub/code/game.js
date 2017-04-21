@@ -204,7 +204,7 @@ var createNonPlayer = function (playerdata) {
     var tryJumpTimer = 0;
 
     nonPlayer.target = undefined; // another sprite
-    nonPlayer.behavior = 'follow'; // can be follow, flee or something else in which case it's chaos
+    nonPlayer.behavior = 'follow'; // can be follow-jumpy, follow, flee or something else in which case it's chaos
 
     nonPlayer.follow = function () {
 
@@ -222,7 +222,13 @@ var createNonPlayer = function (playerdata) {
             this.keys.left = true;
         }
 
-        this.runInChaos();
+    };
+
+    nonPlayer.jumpy = function () {
+
+        if (!this.target) {
+            return;
+        }
 
         if (this.target.y < this.y) {
             this.keys.space = true;
@@ -267,6 +273,12 @@ var createNonPlayer = function (playerdata) {
         switch (this.behavior) {
             case 'follow':
                 this.follow();
+                this.runInChaos();
+                break;
+            case 'follow-jumpy':
+                this.follow();
+                this.runInChaos();
+                this.jumpy();
                 break;
             default:
                 this.runInChaos();
