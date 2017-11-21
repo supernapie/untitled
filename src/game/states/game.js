@@ -95,10 +95,10 @@ var createGameState = function () {
 
         this.lastUpdate = {x: 0, y: 0, ani: 'idle-left', key: 'tilda'};
 
-        this.nonPlayers = [];
-        this.nonPlayers[0] = createNonPlayer({x: this.startPoint.x, y: this.startPoint.y});
-        this.nonPlayers[0].layer = this.layer;
-        this.nonPlayers[0].target = this.player;
+        //this.nonPlayers = [];
+        //this.nonPlayers[0] = createNonPlayer({x: this.startPoint.x, y: this.startPoint.y});
+        //this.nonPlayers[0].layer = this.layer;
+        //this.nonPlayers[0].target = this.player;
 
         //game.camera.follow(this.nonPlayers[0]);
 

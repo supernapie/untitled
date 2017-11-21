@@ -46,8 +46,8 @@ module.exports = function(grunt) {
         require('./server.js');
     });
 
-    //grunt.registerTask('default', ['concat', 'uglify:src_target', 'server', 'open', 'watch']);
-    grunt.registerTask('default', ['concat', 'uglify:src_target', 'server', 'watch']);
+    grunt.registerTask('default', ['concat', 'uglify:src_target', 'server', 'open', 'watch']);
+    //grunt.registerTask('default', ['concat', 'uglify:src_target', 'server', 'watch']);
 
     grunt.registerTask('compile', ['concat', 'uglify:src_target']);
 
