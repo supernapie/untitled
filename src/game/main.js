@@ -11,6 +11,8 @@ var googleFontName = 'Varela Round';
 var titleFontName = 'serif';
 var titleGoogleFontName = 'Alice';
 
+var clouds;
+
 WebFontConfig = {
     active: function() { fontName = googleFontName; titleFontName = titleGoogleFontName; },
     google: { families: [ googleFontName, titleGoogleFontName ] }

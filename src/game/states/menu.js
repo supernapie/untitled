@@ -32,6 +32,8 @@ var createMenuState = function () {
     };
 
     that.update = function () {
+        
+        clouds.tilePosition.x += 1;
 
         if ((pad1.justPressed(Phaser.Gamepad.XBOX360_A) || this.spaceKey.downDuration(1000)) && !this.switched) {
             //console.log('switched');

@@ -9,6 +9,9 @@ var createSplashState = function () {
         //ambient = game.add.audio('ambient');
         //ambient.loopFull();
 
+        clouds = game.make.tileSprite(0, 0, game.width, game.height, 'clouds');
+        game.stage.addChildAt(clouds, 0);
+
         var text = this.text = game.add.text(game.world.centerX, game.world.centerY, gameData.splash.title);
         text.anchor.setTo(0.5);
 
@@ -23,6 +26,10 @@ var createSplashState = function () {
             game.state.start('menu');
         }, this);
 
+    };
+
+    that.update = function () {
+        clouds.tilePosition.x += 1;
     };
 
     that.resize = function () {

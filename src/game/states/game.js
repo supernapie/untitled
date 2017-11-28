@@ -23,6 +23,7 @@ var createGameState = function () {
 
     // private, can't set values change
     that.resizeTO = 0;
+    that.cloudsX = 0;
 
     that.create = function () {
 
@@ -41,6 +42,10 @@ var createGameState = function () {
         //this.layer.debug = true;
         this.layer.visible = false;
         this.layer.resizeWorld();
+
+        clouds.width = game.world.width;
+        clouds.height = game.world.height;
+        game.world.addChildAt(clouds, 0);
 
         this.levelflat = game.add.image(0, 0, 'sandboxflat');
 
@@ -117,6 +122,10 @@ var createGameState = function () {
     };
 
     that.update = function () {
+
+        this.cloudsX += 1;
+        clouds.tilePosition.x = game.camera.x + this.cloudsX;
+        clouds.tilePosition.y = game.camera.y;
 
         // pass player input
 

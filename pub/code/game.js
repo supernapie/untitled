@@ -674,6 +674,7 @@ var createGameState = function () {
 
     // private, can't set values change
     that.resizeTO = 0;
+    that.cloudsX = 0;
 
     that.create = function () {
 
@@ -692,6 +693,10 @@ var createGameState = function () {
         //this.layer.debug = true;
         this.layer.visible = false;
         this.layer.resizeWorld();
+
+        clouds.width = game.world.width;
+        clouds.height = game.world.height;
+        game.world.addChildAt(clouds, 0);
 
         this.levelflat = game.add.image(0, 0, 'sandboxflat');
 
@@ -768,6 +773,10 @@ var createGameState = function () {
     };
 
     that.update = function () {
+
+        this.cloudsX += 1;
+        clouds.tilePosition.x = game.camera.x + this.cloudsX;
+        clouds.tilePosition.y = game.camera.y;
 
         // pass player input
 
@@ -880,6 +889,7 @@ var createLoadState =  function () {
         game.load.tilemap('sandbox', 'assets/tilemaps/data/sandbox.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('sandboxflat', 'assets/sprites/sandbox.png');
         game.load.image('groundTiles', 'assets/tilemaps/tiles/groundTiles.png');
+        game.load.image('clouds', 'assets/sprites/clouds.png');
         game.load.spritesheet('tilda', 'assets/sprites/tilda.png', 32, 32);
         game.load.spritesheet('tilda-bunny', 'assets/sprites/tilda-bunny.png', 32, 32);
 
@@ -1000,6 +1010,8 @@ var createMenuState = function () {
     };
 
     that.update = function () {
+        
+        clouds.tilePosition.x += 1;
 
         if ((pad1.justPressed(Phaser.Gamepad.XBOX360_A) || this.spaceKey.downDuration(1000)) && !this.switched) {
             //console.log('switched');
@@ -1072,6 +1084,9 @@ var createSplashState = function () {
         //ambient = game.add.audio('ambient');
         //ambient.loopFull();
 
+        clouds = game.make.tileSprite(0, 0, game.width, game.height, 'clouds');
+        game.stage.addChildAt(clouds, 0);
+
         var text = this.text = game.add.text(game.world.centerX, game.world.centerY, gameData.splash.title);
         text.anchor.setTo(0.5);
 
@@ -1086,6 +1101,10 @@ var createSplashState = function () {
             game.state.start('menu');
         }, this);
 
+    };
+
+    that.update = function () {
+        clouds.tilePosition.x += 1;
     };
 
     that.resize = function () {
@@ -1127,6 +1146,8 @@ var fontName = 'sans-serif';
 var googleFontName = 'Varela Round';
 var titleFontName = 'serif';
 var titleGoogleFontName = 'Alice';
+
+var clouds;
 
 WebFontConfig = {
     active: function() { fontName = googleFontName; titleFontName = titleGoogleFontName; },
