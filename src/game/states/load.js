@@ -19,6 +19,7 @@ var createLoadState =  function () {
         //game.load.image('square', 'assets/sprites/square.png');
         //game.load.audio('sfx', 'assets/sounds/fx_mixdown.mp3');
         game.load.tilemap('sandbox', 'assets/tilemaps/data/sandbox.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.image('sandboxflat', 'assets/sprites/sandbox.png');
         game.load.image('groundTiles', 'assets/tilemaps/tiles/groundTiles.png');
         game.load.spritesheet('tilda', 'assets/sprites/tilda.png', 32, 32);
         game.load.spritesheet('tilda-bunny', 'assets/sprites/tilda-bunny.png', 32, 32);

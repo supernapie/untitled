@@ -17,6 +17,7 @@ var createGameState = function () {
     // can/must set values in substate
     that.tilemapName = 'levelx';
     that.tilesetImageName = 'tilesx';
+    that.levelflat = undefined;
     that.startPoint = {x: 32, y: 32};
     that.tileOnlyUp = [161,162,163, 177,178,179, 193,194,195, 209,210,211, 225,226,227, 241,242,243];
 
@@ -38,7 +39,10 @@ var createGameState = function () {
 
         this.layer = this.map.createLayer('baselayer');
         //this.layer.debug = true;
+        this.layer.visible = false;
         this.layer.resizeWorld();
+
+        this.levelflat = game.add.image(0, 0, 'sandboxflat');
 
         this.player = createSteerablePlayer({x: this.startPoint.x, y: this.startPoint.y});
         this.player.layer = this.layer;
@@ -178,6 +182,7 @@ var createGameState = function () {
 
         this.map = undefined;
         this.layer = undefined;
+        this.levelflat = undefined;
         this.player = undefined;
         this.cursors = undefined;
         this.jumpButton = undefined;
