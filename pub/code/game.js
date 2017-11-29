@@ -675,6 +675,8 @@ var createGameState = function () {
     // private, can't set values change
     that.resizeTO = 0;
     that.cloudsX = 0;
+    that.prevCameraX = 0;
+    that.prevCameraY = 0;
 
     that.create = function () {
 
@@ -694,9 +696,9 @@ var createGameState = function () {
         this.layer.visible = false;
         this.layer.resizeWorld();
 
-        clouds.width = game.world.width;
-        clouds.height = game.world.height;
-        game.world.addChildAt(clouds, 0);
+        //clouds.width = game.world.width;
+        //clouds.height = game.world.height;
+        //game.world.addChildAt(clouds, 0);
 
         this.levelflat = game.add.image(0, 0, 'sandboxflat');
 
@@ -775,8 +777,10 @@ var createGameState = function () {
     that.update = function () {
 
         this.cloudsX += 1;
-        clouds.tilePosition.x = game.camera.x + this.cloudsX;
-        clouds.tilePosition.y = game.camera.y;
+        clouds.tilePosition.x += this.prevCameraX - game.camera.x + 1;
+        clouds.tilePosition.y += this.prevCameraY - game.camera.y;
+        this.prevCameraX = game.camera.x;
+        this.prevCameraY = game.camera.y;
 
         // pass player input
 
@@ -836,6 +840,10 @@ var createGameState = function () {
             that.layer.resize(game.camera.width, game.camera.height);
         }, 1000);
 
+        clouds.x = 0;
+        clouds.y = 0;
+        clouds.width = game.width;
+        clouds.height = game.height;
     };
 
     that.shutdown = function () {
@@ -1010,7 +1018,7 @@ var createMenuState = function () {
     };
 
     that.update = function () {
-        
+
         clouds.tilePosition.x += 1;
 
         if ((pad1.justPressed(Phaser.Gamepad.XBOX360_A) || this.spaceKey.downDuration(1000)) && !this.switched) {
@@ -1044,6 +1052,10 @@ var createMenuState = function () {
         this.menuGroup.x = game.world.centerX;
         this.menuGroup.y = game.world.centerY;
 
+        clouds.x = 0;
+        clouds.y = 0;
+        clouds.width = game.width;
+        clouds.height = game.height;
     };
 
     that.shutdown = function () {
@@ -1113,6 +1125,10 @@ var createSplashState = function () {
         text.x = game.world.centerX;
         text.y = game.world.centerY;
 
+        clouds.x = 0;
+        clouds.y = 0;
+        clouds.width = game.width;
+        clouds.height = game.height;
     };
 
     that.shutdown = function () {

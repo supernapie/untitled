@@ -38,6 +38,10 @@ var createSplashState = function () {
         text.x = game.world.centerX;
         text.y = game.world.centerY;
 
+        clouds.x = 0;
+        clouds.y = 0;
+        clouds.width = game.width;
+        clouds.height = game.height;
     };
 
     that.shutdown = function () {

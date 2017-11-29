@@ -32,7 +32,7 @@ var createMenuState = function () {
     };
 
     that.update = function () {
-        
+
         clouds.tilePosition.x += 1;
 
         if ((pad1.justPressed(Phaser.Gamepad.XBOX360_A) || this.spaceKey.downDuration(1000)) && !this.switched) {
@@ -66,6 +66,10 @@ var createMenuState = function () {
         this.menuGroup.x = game.world.centerX;
         this.menuGroup.y = game.world.centerY;
 
+        clouds.x = 0;
+        clouds.y = 0;
+        clouds.width = game.width;
+        clouds.height = game.height;
     };
 
     that.shutdown = function () {
