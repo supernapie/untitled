@@ -35,8 +35,21 @@ var createMenuState = function () {
 
         clouds.tilePosition.x += 1;
 
-        if ((pad1.justPressed(Phaser.Gamepad.XBOX360_A) || this.spaceKey.downDuration(1000)) && !this.switched) {
+        if (this.spaceKey.downDuration(1000) && !this.switched) {
             //console.log('switched');
+            this.switched = true;
+            game.state.start('sandbox');
+        }
+
+        if (pad1.justPressed(Phaser.Gamepad.XBOX360_A) && !this.switched) {
+            //console.log('switched');
+            this.switched = true;
+            game.state.start('sandbox');
+        }
+
+        if (game.input.gamepad.pad2.justPressed(Phaser.Gamepad.XBOX360_A) && !this.switched) {
+            //console.log('switched');
+            pad1 = game.input.gamepad.pad2;
             this.switched = true;
             game.state.start('sandbox');
         }

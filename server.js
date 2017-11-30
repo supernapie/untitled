@@ -19,6 +19,7 @@ io.on('connection', function(socket){
 
     var id = players.length;
     var player = {id: id, x: 0, y: 0, ani: 'idle-left', key: 'tilda', ip: socket.request.connection.remoteAddress};
+    console.log(player);
     players.push(player);
 
     socket.on('whoami', function(data) {

@@ -680,6 +680,9 @@ var createGameState = function () {
 
     that.create = function () {
 
+        //console.log("pad1: " + game.input.gamepad.pad1.connected);
+        //console.log("pad2: " + game.input.gamepad.pad2.connected);
+
         game.time.advancedTiming = true; // for debuging the fps
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -735,9 +738,11 @@ var createGameState = function () {
                 if (playerdata.ip == myIp && playerdata.id < myId) {
                     gameIndex++;
                     //console.log(game.input.gamepad);
+                    /*
                     if (game.input.gamepad.pad2.connected) {
                         pad1 = game.input.gamepad.pad2;
                     }
+                    */
                 }
                 that.forceUpdate = true;
             }
@@ -1021,8 +1026,21 @@ var createMenuState = function () {
 
         clouds.tilePosition.x += 1;
 
-        if ((pad1.justPressed(Phaser.Gamepad.XBOX360_A) || this.spaceKey.downDuration(1000)) && !this.switched) {
+        if (this.spaceKey.downDuration(1000) && !this.switched) {
             //console.log('switched');
+            this.switched = true;
+            game.state.start('sandbox');
+        }
+
+        if (pad1.justPressed(Phaser.Gamepad.XBOX360_A) && !this.switched) {
+            //console.log('switched');
+            this.switched = true;
+            game.state.start('sandbox');
+        }
+
+        if (game.input.gamepad.pad2.justPressed(Phaser.Gamepad.XBOX360_A) && !this.switched) {
+            //console.log('switched');
+            pad1 = game.input.gamepad.pad2;
             this.switched = true;
             game.state.start('sandbox');
         }

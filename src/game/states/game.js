@@ -29,6 +29,9 @@ var createGameState = function () {
 
     that.create = function () {
 
+        //console.log("pad1: " + game.input.gamepad.pad1.connected);
+        //console.log("pad2: " + game.input.gamepad.pad2.connected);
+
         game.time.advancedTiming = true; // for debuging the fps
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -84,9 +87,11 @@ var createGameState = function () {
                 if (playerdata.ip == myIp && playerdata.id < myId) {
                     gameIndex++;
                     //console.log(game.input.gamepad);
+                    /*
                     if (game.input.gamepad.pad2.connected) {
                         pad1 = game.input.gamepad.pad2;
                     }
+                    */
                 }
                 that.forceUpdate = true;
             }
