@@ -865,13 +865,15 @@ var createGameState = function () {
 
     };
 
+    /*
     that.render = function () {
 
-        game.debug.text('FPS: ' + game.time.fps, 32, 32, "#ffffff");
+        //game.debug.text('FPS: ' + game.time.fps, 32, 32, "#ffffff");
         //game.debug.text('physicsElapsed: ' + game.time.physicsElapsed, 32, 32, "#ffffff");
         //game.debug.spriteInfo(this.player, 32, 64);
 
     };
+    */
 
     return that;
 
