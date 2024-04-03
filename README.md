@@ -1,4 +1,4 @@
-# play
+# Untitled
 
 To install development tools:
 
@@ -15,5 +15,3 @@ To run the game on a production server:
 Or run the game on a production server via pm2:
 
     pm2 start --name="play" npm -- start
-
-And add a subdomain in apache and don't forget the a record for it in the DNS manager.
